@@ -31,15 +31,9 @@ AutoCONNECT is a web application for buying and selling cars. Users can browse t
 
 ## 🚀 **How to Start the Project?**
 
-### **1. Clone the Repository**
-```sh
-git clone https://github.com/your-repo/autoconnect.git
-cd autoconnect
-```
-
 ---
 
-### **2. Set Up the Back-end**
+### **1. Set Up the Back-end**
 1. **Navigate to the server directory:**
    ```sh
    cd server
@@ -56,7 +50,7 @@ _(Back-end will be available at **http://localhost:5000**)_
 
 ---
 
-### **3. Set Up the Front-end**
+### **2. Set Up the Front-end**
 1. **Navigate to the client directory:**
    ```sh
    cd ../client
