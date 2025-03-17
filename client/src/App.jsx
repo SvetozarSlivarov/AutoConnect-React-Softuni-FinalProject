@@ -6,6 +6,9 @@ import HomePage from "./pages/HomePage";
 import Register from "./components/Register";
 import NotFound from "./components/NotFound";
 import Login from "./components/Login";
+import Catalog from "./components/Catalog";
+import CarDetailPage from "./components/CarDetail";
+
 
 function App() {
   return (
@@ -15,8 +18,8 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-
-
+        <Route path="/catalog" element={<Catalog />} />
+        <Route path="/cars/:id" element={<CarDetailPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
