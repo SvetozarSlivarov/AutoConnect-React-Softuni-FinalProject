@@ -1,0 +1,56 @@
+.hero-section {
+    background: url("../pictures/hero-section-picture.jpg") no-repeat left center;
+    background-size: cover;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 50px;
+    color: white;
+}
+.hero-section .content {
+    max-width: 500px;
+    padding: 20px;
+    border-radius: 10px;
+}
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+.hero-section p {
+    font-size: 1.2rem;
+}
+.btn-browse {
+    background-color: #6cb5be;
+    color: white;
+    border: none;
+    margin-right: 10px;
+    font-size: 1.2rem;
+    padding: 10px 30px;
+    border-radius: 30px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.btn-browse:hover {
+    background-color: #376167;
+    transform: scale(1.075);
+}
+.btn-sell {
+    background-color: #6cb5be;
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+    padding: 10px 30px;
+    border-radius: 30px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+.btn-sell:hover {
+    background-color: #376167;
+    transform: scale(1.075);
+}
+@media (max-width: 768px) {
+    .hero-section {
+    background-position: right center;
+    height: 300px; /* По-малка височина за малки екрани */
+    
+}
+}

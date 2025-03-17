@@ -1,0 +1,17 @@
+.footer a:hover {
+    color: #6cb5be;
+}
+.footer i:hover{
+    color: #6cb5be;
+}
+.footer li:hover{
+    color: #6cb5be;
+}
+.text-link {
+    color: #d1d1d1;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.policy-terms-link + span {
+    margin: 0 15px;
+}
