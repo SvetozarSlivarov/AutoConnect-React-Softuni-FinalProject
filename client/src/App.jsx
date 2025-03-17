@@ -8,6 +8,7 @@ import NotFound from "./components/NotFound";
 import Login from "./components/Login";
 import Catalog from "./components/Catalog";
 import CarDetailPage from "./components/CarDetail";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 
 function App() {
@@ -20,6 +21,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/cars/:id" element={<CarDetailPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

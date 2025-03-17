@@ -41,7 +41,7 @@ const Footer = () => {
           <p className="mb-0">&copy; 2025 AutoCONNECT. All rights reserved.</p>
           <div className="text-center mt-4">
                     <p className="mb-0">
-                        <a href="../Privacy Policy/Privacy-policy.html" className="policy-terms-link text-link">Privacy Policy</a>
+                        <a href="/privacy-policy" className="policy-terms-link text-link">Privacy Policy</a>
                         <span>|</span>
                         <a href="../Тerms-and-conditions/terms-and-conditions.html" className="policy-terms-link text-link">Terms &
                             Conditions</a>
