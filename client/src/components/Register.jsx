@@ -1,0 +1,163 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const Register = () => {
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        agreeTerms: false,
+    });
+
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    // Функция за валидация на email
+    const isValidEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
+    // Функция за валидация на парола (минимум 6 символа, поне една буква и една цифра)
+    const isValidPassword = (password) => {
+        return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password);
+    };
+
+    // Обработване на промени в input полетата
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    };
+
+    // Изпращане на формата
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null); // Изчистваме грешките
+        setLoading(true); // Показваме Loading Spinner
+
+        // Валидация: Проверка дали паролите съвпадат
+        if (formData.password !== formData.confirmPassword) {
+            setError("❌ Passwords do not match.");
+            setLoading(false);
+            return;
+        }
+
+        // Валидация: Проверка дали email e валиден
+        if (!isValidEmail(formData.email)) {
+            setError("❌ Invalid email format.");
+            setLoading(false);
+            return;
+        }
+
+        // Валидация: Проверка за силна парола
+        if (!isValidPassword(formData.password)) {
+            setError("❌ Password must be at least 6 characters long and include at least one letter and one number.");
+            setLoading(false);
+            return;
+        }
+
+        // Валидация: Приемане на условията
+        if (!formData.agreeTerms) {
+            setError("❌ You must accept the terms and conditions.");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:5000/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    email: formData.email,
+                    password: formData.password,
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || "Registration failed");
+            }
+
+            // Успешна регистрация → Пренасочване към Login
+            navigate("/login");
+        } catch (error) {
+            if (error.message.includes("email")) {
+                setError("❌ This email is already in use.");
+            } else {
+                setError(error.message);
+            }
+        } finally {
+            setLoading(false); // Скриваме Loading Spinner
+        }
+    };
+
+    return (
+        <div className="container vh-70 d-flex justify-content-center align-items-center">
+            <div className="card p-5" style={{ borderRadius: "15px", width: "400px" }}>
+                <h2 className="text-uppercase text-center mb-4">Create an account</h2>
+
+                {error && <p className="text-danger text-center">{error}</p>}
+
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-2">
+                        <label className="form-label">First Name</label>
+                        <input type="text" name="firstName" className="form-control" value={formData.firstName} onChange={handleChange} required />
+                    </div>
+
+                    <div className="mb-2">
+                        <label className="form-label">Last Name</label>
+                        <input type="text" name="lastName" className="form-control" value={formData.lastName} onChange={handleChange} required />
+                    </div>
+
+                    <div className="mb-2">
+                        <label className="form-label">Your Email</label>
+                        <input type="email" name="email" className="form-control" value={formData.email} onChange={handleChange} required />
+                    </div>
+
+                    <div className="mb-2">
+                        <label className="form-label">Password</label>
+                        <input type="password" name="password" className="form-control" value={formData.password} onChange={handleChange} required />
+                    </div>
+
+                    <div className="mb-2">
+                        <label className="form-label">Repeat your password</label>
+                        <input type="password" name="confirmPassword" className="form-control" value={formData.confirmPassword} onChange={handleChange} required />
+                    </div>
+
+                    <div className="form-check d-flex justify-content-center mb-3">
+                        <input className="form-check-input me-2" type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} />
+                        <label className="form-check-label">
+                            I agree to the <a href="/terms-and-conditions" className="text-body"><u>Terms and conditions</u></a>
+                        </label>
+                    </div>
+
+                    <button type="submit" className="btn btn-success btn-block w-100" disabled={loading}>
+                        {loading ? (
+                            <span>
+                                <span className="spinner-border spinner-border-sm me-2"></span>
+                                Registering...
+                            </span>
+                        ) : (
+                            "Register"
+                        )}
+                    </button>
+
+                    <p className="text-center text-muted mt-3">
+                        Have an account? <a href="/login" className="fw-bold text-body"><u>Login here</u></a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default Register;
