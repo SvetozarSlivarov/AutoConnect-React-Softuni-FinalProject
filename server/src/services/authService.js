@@ -51,4 +51,9 @@ const authenticateUser = async ({ email, password }) => {
     };
 };
 
-export default { createUser, authenticateUser };
+export const checkEmailExists = async (email) => {
+    const existingUser = await User.findOne({ email });
+    return !!existingUser; // Превръщаме резултата в булева стойност
+};
+
+export default { createUser, authenticateUser, checkEmailExists };
