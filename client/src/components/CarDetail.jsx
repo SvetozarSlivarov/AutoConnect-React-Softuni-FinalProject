@@ -43,7 +43,7 @@ const CarDetailPage = () => {
                     </div>
                 </div>
                 <div className="col-lg-6">
-                    <h2>{car.brand} {car.model}</h2>
+                    <h2>{car.make} {car.model}</h2>
                     <h3 className="text-primary">${car.price}</h3>
                     <p className="text-muted">Condition: <strong>{car.condition}</strong></p>
                     <ul className="list-group list-group-flush">

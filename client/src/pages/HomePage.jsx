@@ -1,7 +1,7 @@
 import React from "react";
-import CarCard from "../components/CarCardHome.jsx";
-import HowItworks from "../components/HowItWorks.jsx";
-import HeroHomeSection from "../components/HeroHomeSection.jsx";
+import CarCard from "../components/HomePage/CarCardHome.jsx";
+import HowItworks from "../components/HomePage/HowItWorks.jsx";
+import HeroHomeSection from "../components/HomePage/HeroHomeSection.jsx";
 
 const featuredCars = [
   {
