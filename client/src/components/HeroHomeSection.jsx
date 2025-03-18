@@ -1,4 +1,4 @@
-import '../assets/styles/HomeHeroSection.css'
+import '../../public/styles/HomeHeroSection.css'
 
 const HeroHomeSection = () => {
     return (

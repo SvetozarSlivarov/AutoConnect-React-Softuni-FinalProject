@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../assets/styles/DetailPage.css";
+import "../../public/styles/DetailPage.css";
 
 const CarDetailPage = () => {
     const { id } = useParams();

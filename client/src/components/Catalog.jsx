@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../assets/styles/Catalog.css";
+import "../../public/styles/Catalog.css";
 
 const Catalog = () => {
   const [cars, setCars] = useState([]);
@@ -19,13 +19,11 @@ const Catalog = () => {
       .catch((err) => console.error("Error fetching cars:", err));
   }, []);
 
-  // Филтриране на коли по търсене и сортиране
   const filterCars = (searchTerm, sortBy) => {
     let filtered = cars.filter((car) =>
       car.brand?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Сортиране
     if (sortBy === "price") {
       filtered.sort((a, b) => a.price - b.price);
     } else if (sortBy === "year") {
@@ -34,15 +32,12 @@ const Catalog = () => {
 
     setFilteredCars(filtered);
   };
-
-  // Хендъл за търсене
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearch(value);
     filterCars(value, sort);
   };
 
-  // Хендъл за сортиране
   const handleSort = (e) => {
     const value = e.target.value;
     setSort(value);
