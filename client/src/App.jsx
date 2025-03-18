@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import Catalog from "./components/Catalog";
 import CarDetailPage from "./components/CarDetail";
 import PrivacyPolicy from "./components/PrivacyPolicy";
+import TermsAndConditions from "./components/TermsAndConditions";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/cars/:id" element={<CarDetailPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 
 
         <Route path="*" element={<NotFound />} />
