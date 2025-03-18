@@ -13,7 +13,25 @@ const Register = () => {
 
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [emailTaken, setEmailTaken] = useState(false);
     const navigate = useNavigate();
+
+    // Функция за проверка на email в базата данни
+    const checkEmailExists = async (email) => {
+        try {
+            const response = await fetch("http://localhost:5000/api/auth/check-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+            return response.ok ? false : true; // Ако email съществува → true
+        } catch (error) {
+            console.error("Error checking email:", error);
+            return false;
+        }
+    };
 
     // Функция за валидация на email
     const isValidEmail = (email) => {
@@ -37,31 +55,40 @@ const Register = () => {
     // Изпращане на формата
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null); // Изчистваме грешките
-        setLoading(true); // Показваме Loading Spinner
+        setError(null);
+        setLoading(true);
 
-        // Валидация: Проверка дали паролите съвпадат
+        // Проверка дали email е зает ПРЕДИ регистрацията
+        const emailExists = await checkEmailExists(formData.email);
+        if (emailExists) {
+            setError("❌ This email is already in use.");
+            setEmailTaken(true);
+            setLoading(false);
+            return;
+        }
+
+        // Проверка дали паролите съвпадат
         if (formData.password !== formData.confirmPassword) {
             setError("❌ Passwords do not match.");
             setLoading(false);
             return;
         }
 
-        // Валидация: Проверка дали email e валиден
+        // Проверка за валиден email
         if (!isValidEmail(formData.email)) {
             setError("❌ Invalid email format.");
             setLoading(false);
             return;
         }
 
-        // Валидация: Проверка за силна парола
+        // Проверка за силна парола
         if (!isValidPassword(formData.password)) {
             setError("❌ Password must be at least 6 characters long and include at least one letter and one number.");
             setLoading(false);
             return;
         }
 
-        // Валидация: Приемане на условията
+        // Проверка дали потребителят е приел условията
         if (!formData.agreeTerms) {
             setError("❌ You must accept the terms and conditions.");
             setLoading(false);
@@ -71,9 +98,7 @@ const Register = () => {
         try {
             const response = await fetch("http://localhost:5000/api/auth/register", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     firstName: formData.firstName,
                     lastName: formData.lastName,
@@ -87,16 +112,12 @@ const Register = () => {
                 throw new Error(data.message || "Registration failed");
             }
 
-            // Успешна регистрация → Пренасочване към Login
+            // Пренасочване след успешна регистрация
             navigate("/login");
         } catch (error) {
-            if (error.message.includes("email")) {
-                setError("❌ This email is already in use.");
-            } else {
-                setError(error.message);
-            }
+            setError(error.message);
         } finally {
-            setLoading(false); // Скриваме Loading Spinner
+            setLoading(false);
         }
     };
 
@@ -120,7 +141,15 @@ const Register = () => {
 
                     <div className="mb-2">
                         <label className="form-label">Your Email</label>
-                        <input type="email" name="email" className="form-control" value={formData.email} onChange={handleChange} required />
+                        <input
+                            type="email"
+                            name="email"
+                            className={`form-control ${emailTaken ? "is-invalid" : ""}`}
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                        {emailTaken && <div className="invalid-feedback">This email is already taken.</div>}
                     </div>
 
                     <div className="mb-2">
