@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { checkEmailExists, registerUser } from "../services/authService.js";
+import { isValidEmail, isValidPassword } from "../utils/registerValidation.js";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -16,33 +18,6 @@ const Register = () => {
     const [emailTaken, setEmailTaken] = useState(false);
     const navigate = useNavigate();
 
-    // Функция за проверка на email в базата данни
-    const checkEmailExists = async (email) => {
-        try {
-            const response = await fetch("http://localhost:5000/api/auth/check-email", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-            });
-
-            const data = await response.json();
-            return response.ok ? false : true; // Ако email съществува → true
-        } catch (error) {
-            console.error("Error checking email:", error);
-            return false;
-        }
-    };
-
-    // Функция за валидация на email
-    const isValidEmail = (email) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    };
-
-    // Функция за валидация на парола (минимум 6 символа, поне една буква и една цифра)
-    const isValidPassword = (password) => {
-        return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password);
-    };
-
     // Обработване на промени в input полетата
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -58,7 +33,7 @@ const Register = () => {
         setError(null);
         setLoading(true);
 
-        // Проверка дали email е зает ПРЕДИ регистрацията
+        // Проверка дали email е зает
         const emailExists = await checkEmailExists(formData.email);
         if (emailExists) {
             setError("❌ This email is already in use.");
@@ -96,23 +71,13 @@ const Register = () => {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    email: formData.email,
-                    password: formData.password,
-                }),
+            await registerUser({
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                password: formData.password,
             });
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Registration failed");
-            }
-
-            // Пренасочване след успешна регистрация
             navigate("/login");
         } catch (error) {
             setError(error.message);
