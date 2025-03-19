@@ -11,8 +11,8 @@ export const getCarById = async (id) => {
 };
 
 // (POST)
-export const createCar = async (carData) => {
-    return await Car.create(carData);
+export const createCar = async (carData, imageUrls) => {
+    return await Car.create({ ...carData, images: imageUrls });
 };
 
 // (PUT)

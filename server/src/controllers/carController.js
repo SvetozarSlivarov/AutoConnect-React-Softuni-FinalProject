@@ -20,10 +20,19 @@ export const getCarController = async (req, res) => {
     }
 };
 
-//  POST 
+//  POST (със снимки)
 export const createCarController = async (req, res) => {
     try {
-        const newCar = await createCar(req.body);
+        const { brand, model, price, description } = req.body;
+
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ message: "Please upload at least one image" });
+        }
+
+        // Извличаме URL-ите на качените снимки
+        const imageUrls = req.files.map((file) => file.path);
+
+        const newCar = await createCar({ brand, model, price, description }, imageUrls);
         res.status(201).json(newCar);
     } catch (error) {
         res.status(400).json({ message: error.message });
