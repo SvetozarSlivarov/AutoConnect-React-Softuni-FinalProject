@@ -5,11 +5,11 @@ const CarCard = ({ car }) => {
     <div className="col-lg-6 col-md-12">
       <div className="custom-car-card">
         <div className="row g-0">
-          {/* Single Image */}
+
           <div className="col-6 custom-card-image">
             <img src={car.image} className="custom-car-image" alt={car.name} />
           </div>
-          {/* Car Details */}
+
           <div className="col-6 custom-card-body">
             <h3 className="custom-car-title">{car.name}</h3>
             <p className="custom-car-price">{car.price}</p>

@@ -10,6 +10,7 @@ import Catalog from "./components/Catalog";
 import CarDetailPage from "./components/CarDetail";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsAndConditions from "./components/TermsAndConditions";
+import Contact from "./components/Contact";
 
 
 function App() {
@@ -22,7 +23,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/cars/:id" element={<CarDetailPage />} />
+
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/contact" element={<Contact />} />
+
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 
 
