@@ -1,37 +1,37 @@
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const navigate = useNavigate();
+    const [token, setToken] = useState(localStorage.getItem("token"));
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        console.log(localStorage.getItem("token"));
         if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                setUser(decodedToken); // Запазваме декодираните данни в user
-            } catch (error) {
-                console.error("Invalid token:", error);
-                logout();
-            }
-        }
-    }, []);
+            fetch("http://localhost:5000/api/auth/me", {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then((res) => res.json())
+                
+                .then((data) => {
+                    console.log("User from API:", data.user);
+                    setUser(data.user);
+                })
+                .catch(() => setUser(null));
 
-    const login = (token, userData) => {
-      localStorage.setItem("token", token);
-      setUser(userData); // Запазваме user данните в state
-      navigate("/");
-  };
+        }
+    }, [token]);
+
+    const login = async (token, userData) => {
+        setToken(token);
+        setUser(userData);
+        localStorage.setItem("token", token);
+    };
 
     const logout = () => {
-        localStorage.removeItem("token");
         setUser(null);
-        navigate("/login");
+        setToken(null);
+        localStorage.removeItem("token");
     };
 
     return (
@@ -40,3 +40,6 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
+export { AuthContext };
+export default AuthContext;

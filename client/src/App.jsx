@@ -11,6 +11,7 @@ import CarDetailPage from "./components/CarDetail";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsAndConditions from "./components/TermsAndConditions";
 import Contact from "./components/Contact";
+import CarUploadForm from "./components/CarUploadForm";
 
 
 function App() {
@@ -23,7 +24,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/cars/:id" element={<CarDetailPage />} />
+        <Route path="/cars/add" element={<CarUploadForm />} />
 
+        
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/contact" element={<Contact />} />
 
