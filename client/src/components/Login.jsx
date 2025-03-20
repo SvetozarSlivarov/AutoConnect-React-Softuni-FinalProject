@@ -1,15 +1,16 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import AuthContext from "../context/AuthContext.jsx";
+import { loginUser } from "../services/authService";
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { login } = useContext(AuthContext); // Извличаме login функцията от AuthContext
+    const { login } = useContext(AuthContext); // Взимаме функцията login от AuthContext
     const navigate = useNavigate();
 
-    // Обработване на промяна в полетата
+    // Обработване на промяна в input полетата
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -19,21 +20,11 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
-    
+
         try {
-            const response = await fetch("http://localhost:5000/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
-            });
-    
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Login failed");
-            }
-    
-            login(data.token, data.user); // Изпращаме токена и user данните
-    
+            const data = await loginUser(formData.email, formData.password);
+            login(data.token, data.user); // Записваме user-а в контекста
+            navigate("/"); // Пренасочваме към началната страница
         } catch (error) {
             setError(error.message);
         } finally {
@@ -43,7 +34,7 @@ const Login = () => {
 
     return (
         <div className="container vh-100 d-flex justify-content-center align-items-center">
-            <div className="card p-5" style={{ borderRadius: "15px", width: "400px" }}>
+            <div className="card p-5 shadow" style={{ borderRadius: "15px", width: "400px" }}>
                 <h2 className="text-uppercase text-center mb-4">Login</h2>
 
                 {error && <p className="text-danger text-center">{error}</p>}
@@ -74,11 +65,21 @@ const Login = () => {
                     </div>
 
                     <button type="submit" className="btn btn-success btn-block w-100" disabled={loading}>
-                        {loading ? "Logging in..." : "Login"}
+                        {loading ? (
+                            <>
+                                <span className="spinner-border spinner-border-sm me-2"></span>
+                                Logging in...
+                            </>
+                        ) : (
+                            "Login"
+                        )}
                     </button>
 
                     <p className="text-center text-muted mt-3">
-                        Don't have an account? <a href="/register" className="fw-bold text-body"><u>Register here</u></a>
+                        Don't have an account?{" "}
+                        <a href="/register" className="fw-bold text-body">
+                            <u>Register here</u>
+                        </a>
                     </p>
                 </form>
             </div>

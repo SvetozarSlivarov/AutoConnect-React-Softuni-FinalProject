@@ -26,8 +26,6 @@ const carSchema = new mongoose.Schema(
       enum: ["New", "Used"], 
       required: true 
     },
-    doors: { type: Number, required: true },
-    seats: { type: Number, required: true },
     drivetrain: { 
       type: String, 
       enum: ["FWD", "RWD", "AWD"], 

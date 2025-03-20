@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../public/styles/PrivacyPolicy.module.css";
+import styles from "../public/styles/PrivacyPolicy.module.css";
 
 const PrivacyPolicy = () => {
   return (

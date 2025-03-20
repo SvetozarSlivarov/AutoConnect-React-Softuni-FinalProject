@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 import GoogleMapComponent from "./GoogleMap";
-import styles from "../../public/styles/Contact.module.css";
+import styles from "../public/styles/Contact.module.css";
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -22,7 +22,6 @@ const Contact = () => {
     <div className={styles.contactContainer}>
       <h2>Get in Touch</h2>
       <div className={styles.contactContent}>
-        {/* Contact Info */}
         <div className={styles.contactInfo}>
           <h4>Contact Information</h4>
           <p><FaMapMarkerAlt className={styles.icon} /> 123 Car Street, Motor City, USA</p>
@@ -38,7 +37,6 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* Contact Form */}
         <div className={styles.formBox}>
           <h4>Send Us a Message</h4>
           <form onSubmit={handleSubmit} className={styles.contactForm}>

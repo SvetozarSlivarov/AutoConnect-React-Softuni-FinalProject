@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../../public/styles/Catalog.css";
+import "../public/styles/Catalog.css";
 
 const Catalog = () => {
   const [cars, setCars] = useState([]);
@@ -67,7 +67,7 @@ const Catalog = () => {
             <div className="col-lg-4 col-md-6 mb-4" key={car._id}>
               <div className="card car-card">
                 <img
-                  src={car.imageUrl}
+                  src={car.images[0]}
                   className="card-img-top car-image"
                   alt={`${car.make} ${car.model}`}
                 />

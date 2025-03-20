@@ -1,3 +1,4 @@
+import Car from "../models/Car.js";
 import { getAllCars, getCarById, createCar, updateCar, deleteCar } from "../services/carService.js";
 
 //  GET ALL 
@@ -23,21 +24,36 @@ export const getCarController = async (req, res) => {
 //  POST (със снимки)
 export const createCarController = async (req, res) => {
     try {
-        const { brand, model, price, description } = req.body;
-
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ message: "Please upload at least one image" });
-        }
-
-        // Извличаме URL-ите на качените снимки
-        const imageUrls = req.files.map((file) => file.path);
-
-        const newCar = await createCar({ brand, model, price, description }, imageUrls);
-        res.status(201).json(newCar);
+      const { brand, model, year, price, fuelType, transmission, power, mileage, color, description, condition, doors, seats, drivetrain, features, owner } = req.body;
+  
+      // Извличане на URL-ите от Cloudinary
+      const imageUrls = req.files.map(file => file.path);
+  
+      const newCar = await Car.create({
+        brand,
+        model,
+        year,
+        price,
+        fuelType,
+        transmission,
+        power,
+        mileage,
+        color,
+        description,
+        condition,
+        doors,
+        seats,
+        drivetrain,
+        features,
+        owner,
+        images: imageUrls, // 🖼️ Запазваме URL-ите в базата
+      });
+  
+      res.status(201).json(newCar);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     }
-};
+  };
 
 //  PUT
 export const updateCarController = async (req, res) => {
