@@ -2,7 +2,6 @@ import express from "express";
 import connectDB from "./config/db.js";
 import configureExpress from "./config/express.js";
 import authRoutes from "./routes/authRoutes.js";
-import seedAdminUser from "./config/seedAdmin.js";
 import userRoutes from './routes/userRoutes.js';
 import carRoutes from './routes/carRoutes.js';
 
@@ -11,7 +10,7 @@ const app = express();
 configureExpress(app);
 
 // Connect to MongoDB
-connectDB().then(() => seedAdminUser());
+connectDB();
 
 // Routes
 app.use("/api/auth", authRoutes);

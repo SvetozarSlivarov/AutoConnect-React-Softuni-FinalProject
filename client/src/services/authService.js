@@ -1,36 +1,34 @@
-const API_BASE_URL = "http://localhost:5000/api/auth";
+export const registerUser = async (userData) => {
+    const res = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+    });
+    return res.json();
+};
+
+export const loginUser = async (email, password) => {
+    const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+    });
+    return res.json();
+};
 
 export const checkEmailExists = async (email) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/check-email`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email }),
-        });
+        const res = await fetch(`http://localhost:5000/api/auth/check-email/${email}`);
 
-        const data = await response.json();
-        return response.ok ? false : true; // Ако email съществува → true
-    } catch (error) {
-        console.error("Error checking email:", error);
-        return false;
-    }
-};
-
-export const registerUser = async (userData) => {
-    try {
-        const response = await fetch(`${API_BASE_URL}/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData),
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || "Registration failed");
+        if (!res.ok) {
+            throw new Error("Error checking email availability");
         }
 
-        return data;
+        const data = await res.json();
+        console.log("Email check response:", data); // Дебъгване на отговора
+        return data.exists; // Връща `true`, ако имейлът съществува, иначе `false`
     } catch (error) {
-        throw new Error(error.message);
+        console.error("Error checking email:", error);
+        return false; // Ако има грешка, по-добре да върнем `false`, за да не блокираме регистрацията
     }
 };

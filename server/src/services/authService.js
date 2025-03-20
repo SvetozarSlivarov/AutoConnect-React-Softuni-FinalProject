@@ -1,59 +1,68 @@
-import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-const JWT_SECRET = "your-secret-key";
+const JWT_SECRET =  "mysecretkey";
 
-const createUser = async ({ firstName, lastName, email, password }) => {
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        console.log("🔵 Получени данни:", { firstName, lastName, email, password });
-
-        const newUser = new User({ firstName, lastName, email, password: hashedPassword });
-
-        console.log("🟢 Преди запис в MongoDB:", newUser);
-
-        const savedUser = await newUser.save();
-
-        console.log("✅ Успешно записан:", savedUser);
-        return savedUser;
-
-    } catch (error) {
-        console.error("❌ Грешка при запис:", error.message);
-        console.error("📝 Stack trace:", error.stack);
-        throw error;
+// Регистрация на нов потребител
+export const registerUser = async (firstName, lastName, email, password) => {
+    // Проверка за съществуващ потребител
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        throw new Error("Email already in use");
     }
+
+    // Хеширане на паролата
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Запазване в базата
+    const newUser = new User({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+    });
+
+    await newUser.save();
+    return { message: "User created successfully" };
 };
 
-const authenticateUser = async ({ email, password }) => {
+// Логин на потребител
+export const loginUser = async (email, password) => {
     const user = await User.findOne({ email });
     if (!user) throw new Error("Invalid credentials");
 
+    // Проверка на паролата
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Invalid credentials");
 
-    const token = jwt.sign(
-        { id: user._id, role: user.role },
-        JWT_SECRET,
-        { expiresIn: "1h" }
-    );
-    
-    // Връщаме токен + сигурни user данни
+    // Генериране на токен
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+
     return {
         token,
         user: {
             id: user._id,
             firstName: user.firstName,
             lastName: user.lastName,
-            userName: user.userName,
-            role: user.role,
+            email: user.email,
         },
     };
 };
 
-export const checkEmailExists = async (email) => {
-    const existingUser = await User.findOne({ email });
-    return !!existingUser; // Превръщаме резултата в булева стойност
+// Проверка на текущ потребител
+export const getCurrentUser = async (token) => {
+    if (!token) throw new Error("Unauthorized");
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) throw new Error("User not found");
+
+    return user;
 };
 
-export default { createUser, authenticateUser, checkEmailExists };
+export const emailExists = async (email) => {
+    const user = await User.findOne({ email });
+    return !!user;
+};
