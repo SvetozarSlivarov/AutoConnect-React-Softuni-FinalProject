@@ -4,7 +4,6 @@ AutoCONNECT is a web application for buying and selling cars. Users can browse t
 
 ## 📌 Features:
 - 🔹 User registration and login
-- 🔹 Roles: **User** & **Admin**
 - 🔹 Browse **car catalog**
 - 🔹 Add, edit, and delete car listings (only by the owner or admin)
 - 🔹 Detailed car page
