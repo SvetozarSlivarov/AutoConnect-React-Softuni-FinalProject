@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../public/styles/Catalog.css";
+import styles from "../public/styles/Catalog.module.css"; // ✅ Модулно CSS
 
 const Catalog = () => {
   const [cars, setCars] = useState([]);
@@ -32,6 +32,7 @@ const Catalog = () => {
 
     setFilteredCars(filtered);
   };
+
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearch(value);
@@ -45,8 +46,9 @@ const Catalog = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Explore Our Cars</h2>
+    <div className={`container mt-5 ${styles.catalogContainer}`}>
+      <h2 className={`text-center mb-4 ${styles.catalogTitle}`}>Explore Our Cars</h2>
+
       <div className="d-flex justify-content-between mb-3">
         <input
           type="text"

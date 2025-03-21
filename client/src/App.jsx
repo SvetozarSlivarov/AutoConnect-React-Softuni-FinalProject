@@ -12,12 +12,15 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsAndConditions from "./components/TermsAndConditions";
 import Contact from "./components/Contact";
 import CarUploadForm from "./components/CarUploadForm";
+import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTopButton from "./components/ScrollToTopButton";
 
 
 function App() {
   return (
     <>
       <Navbar />
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<Register />} />
@@ -35,6 +38,7 @@ function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ScrollToTopButton />
       <Footer />
     </>
   );

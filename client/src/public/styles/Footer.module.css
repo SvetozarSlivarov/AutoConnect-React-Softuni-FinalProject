@@ -1,0 +1,15 @@
+.footer :global(a:hover),
+.footer :global(i:hover),
+.footer :global(li:hover) {
+  color: #6cb5be;
+}
+
+.textLink {
+  color: #d1d1d1;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.policyTermsLink + span {
+  margin: 0 15px;
+}

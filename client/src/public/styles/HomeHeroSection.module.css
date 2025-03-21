@@ -1,4 +1,4 @@
-.hero-section {
+.heroSection {
     background: url("../pictures/hero-section-picture.jpg") no-repeat left center;
     background-size: cover;
     height: 500px;
@@ -7,20 +7,24 @@
     justify-content: flex-start;
     padding-left: 50px;
     color: white;
-}
-.hero-section .content {
+  }
+  
+  .content {
     max-width: 500px;
     padding: 20px;
     border-radius: 10px;
-}
-.hero-section h1 {
+  }
+  
+  .heroTitle {
     font-size: 3rem;
     font-weight: bold;
-}
-.hero-section p {
+  }
+  
+  .heroText {
     font-size: 1.2rem;
-}
-.btn-browse {
+  }
+  
+  .btnBrowse {
     background-color: #6cb5be;
     color: white;
     border: none;
@@ -29,12 +33,14 @@
     padding: 10px 30px;
     border-radius: 30px;
     transition: transform 0.3s ease, background-color 0.3s ease;
-}
-.btn-browse:hover {
+  }
+  
+  .btnBrowse:hover {
     background-color: #376167;
     transform: scale(1.075);
-}
-.btn-sell {
+  }
+  
+  .btnSell {
     background-color: #6cb5be;
     color: white;
     border: none;
@@ -42,15 +48,17 @@
     padding: 10px 30px;
     border-radius: 30px;
     transition: transform 0.3s ease, background-color 0.3s ease;
-}
-.btn-sell:hover {
+  }
+  
+  .btnSell:hover {
     background-color: #376167;
     transform: scale(1.075);
-}
-@media (max-width: 768px) {
-    .hero-section {
-    background-position: right center;
-    height: 300px; /* По-малка височина за малки екрани */
-    
-}
-}
+  }
+  
+  @media (max-width: 768px) {
+    .heroSection {
+      background-position: right center;
+      height: 300px;
+    }
+  }
+  
