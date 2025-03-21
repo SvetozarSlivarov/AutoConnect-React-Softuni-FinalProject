@@ -20,9 +20,6 @@ const CarUploadForm = () => {
     color: "",
     description: "",
     condition: "Used",
-    doors: "",
-    seats: "",
-    drivetrain: "FWD",
     features: [],
     images: [],
   });
@@ -30,6 +27,141 @@ const CarUploadForm = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showFeatures, setShowFeatures] = useState(false);
+
+  const featureCategories = {
+    "Comfort": [
+      "Air Conditioning",
+      "Climate Control",
+      "Heated Seats",
+      "Heated Steering Wheel",
+      "Leather Interior",
+      "Seat Memory",
+      "Sunroof",
+      "Panoramic Sunroof",
+      "Split Folding Rear Seats",
+      "Armrest",
+      "Adjustable Steering Wheel",
+      "Rear Air Vents",
+      "Ventilated Seats"
+    ],
+    "Safety": [
+      "ABS (Anti-lock Braking System)",
+      "Airbags - Driver",
+      "Airbags - Passenger",
+      "Airbags - Side",
+      "Blind Spot Monitoring",
+      "Lane Departure Warning",
+      "Lane Assist",
+      "Hill Start Assist",
+      "Parking Sensors - Front",
+      "Parking Sensors - Rear",
+      "Rear View Camera",
+      "Backup Camera",
+      "Reversing Camera",
+      "Daytime Running Lights",
+      "Fog Lights",
+      "LED Headlights",
+      "Traffic Sign Recognition",
+      "ESP (Electronic Stability Program)",
+      "Tyre Pressure Monitoring System",
+      "Adaptive Cruise Control",
+      "Auto Emergency Braking",
+      "Traction Control"
+    ],
+    "Technology": [
+      "Bluetooth",
+      "USB Port",
+      "Wireless Charging",
+      "Navigation System",
+      "Apple CarPlay",
+      "Android Auto",
+      "Satellite Radio",
+      "Voice Control",
+      "Multi-Function Steering Wheel",
+      "Keyless Entry",
+      "Start/Stop System",
+      "Remote Central Locking",
+      "Heads-Up Display",
+      "Touchscreen Display",
+      "Digital Dashboard",
+      "Smartphone Integration"
+    ],
+    "Exterior": [
+      "Alloy Wheels",
+      "Steel Wheels",
+      "Electric Mirrors",
+      "Heated Mirrors",
+      "Electric Windows",
+      "Automatic Headlights",
+      "Rain Sensors",
+      "Tow Bar",
+      "Roof Rails",
+      "Power Tailgate",
+      "Hands-Free Trunk Access",
+      "Tinted Windows",
+      "Chrome Trim",
+      "Sunshade",
+      "Sport Body Kit"
+    ],
+    "Drivetrain & Handling": [
+      "FWD (Front-Wheel Drive)",
+      "RWD (Rear-Wheel Drive)",
+      "AWD (All-Wheel Drive)",
+      "4WD (4x4)",
+      "Limited Slip Differential",
+      "Sport Suspension",
+      "Adaptive Suspension",
+      "Hydraulic Steering",
+      "Electric Steering",
+      "Adjustable Suspension",
+      "Paddle Shifters"
+    ],
+    "Lighting & Visibility": [
+      "Bi-Xenon Headlights",
+      "Matrix LED",
+      "Cornering Lights",
+      "Automatic High Beam",
+      "Rear Fog Lights",
+      "Front Fog Lights",
+      "Light Sensor",
+      "Headlight Washers"
+    ],
+    "Interior": [
+      "Ambient Lighting",
+      "Leather Steering Wheel",
+      "Wood Trim",
+      "Aluminium Trim",
+      "Third Row Seating",
+      "Fold-Flat Seats",
+      "ISOFIX (Child Seat Anchors)",
+      "Sun Blinds",
+      "Floor Mats",
+      "Cargo Cover"
+    ],
+    "Vehicle Details": [
+      "2 Doors",
+      "3 Doors",
+      "4 Doors",
+      "5 Doors",
+      "2 Seats",
+      "4 Seats",
+      "5 Seats",
+      "7 Seats",
+      "8+ Seats",
+      "Left-Hand Drive",
+      "Right-Hand Drive",
+      "Euro 4",
+      "Euro 5",
+      "Euro 6",
+      "Original Paint",
+      "Garage Kept",
+      "Non-Smoker Vehicle"
+    ]
+  };
+  
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -173,6 +305,66 @@ const CarUploadForm = () => {
             <option>New</option>
             <option>Used</option>
           </Form.Select>
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label style={{ display: "block" }}>Features</Form.Label>
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => setShowFeatures((prev) => !prev)}
+            aria-controls="features-collapse"
+            aria-expanded={showFeatures}
+          >
+            {showFeatures ? "Hide Features" : "Show Features"}
+          </Button>
+
+          {showFeatures && (
+            <div
+              id="features-collapse"
+              style={{
+                marginTop: "15px",
+                border: "1px solid #ccc",
+                padding: "15px",
+                borderRadius: "8px",
+                background: "#f9f9f9",
+              }}
+            >
+              {Object.entries(featureCategories).map(([category, features]) => (
+                <div key={category} style={{ marginBottom: "20px" }}>
+                  <h6 style={{ borderBottom: "1px solid #ddd" }}>{category}</h6>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                      gap: "10px",
+                      marginTop: "10px",
+                    }}
+                  >
+                    {features.map((feature) => (
+                      <Form.Check
+                        key={feature}
+                        type="checkbox"
+                        id={`feature-${feature}`}
+                        label={feature}
+                        value={feature}
+                        checked={carData.features.includes(feature)}
+                        onChange={(e) => {
+                          const { checked, value } = e.target;
+                          setCarData((prevData) => ({
+                            ...prevData,
+                            features: checked
+                              ? [...prevData.features, value]
+                              : prevData.features.filter((f) => f !== value),
+                          }));
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </Form.Group>
 
         {/* Image Upload */}

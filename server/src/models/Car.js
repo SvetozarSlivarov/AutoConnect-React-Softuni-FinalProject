@@ -26,11 +26,6 @@ const carSchema = new mongoose.Schema(
       enum: ["New", "Used"], 
       required: true 
     },
-    drivetrain: { 
-      type: String, 
-      enum: ["FWD", "RWD", "AWD"], 
-      required: true 
-    },
     features: [{ type: String }],
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     createdAt: { type: Date, default: Date.now },
