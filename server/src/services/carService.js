@@ -17,6 +17,7 @@ export const createCar = async (carData, imageUrls) => {
 
 // (PUT)
 export const updateCar = async (id, updateData) => {
+    console.log(updateData)
     return await Car.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
 };
 

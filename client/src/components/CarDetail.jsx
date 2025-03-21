@@ -1,25 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../public/styles/DetailPage.module.css";
 
 const CarDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { user, token } = useContext(AuthContext);
+
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [owner, setOwner] = useState(null)
 
   useEffect(() => {
     const fetchCar = async () => {
       try {
         const response = await fetch(`http://localhost:5000/api/cars/${id}`);
-        if (!response.ok) {
-          throw new Error("Car not found");
-        }
+        if (!response.ok) throw new Error("Car not found");
         const data = await response.json();
         setCar(data);
-      } catch (error) {
-        setError(error.message);
+      } catch (err) {
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -27,9 +30,31 @@ const CarDetailPage = () => {
 
     fetchCar();
   }, [id]);
+  
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this listing?")) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/cars/${car._id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
+        if (!res.ok) throw new Error("Failed to delete");
+
+        navigate("/catalog");
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+  };
+
+  const isOwner = user && car?.owner === user._id;
+  console.log(isOwner, user, car?.owner)
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
+  if (!car) return null;
 
   return (
     <div className={`container ${styles.container}`}>
@@ -51,13 +76,15 @@ const CarDetailPage = () => {
             ))}
           </div>
         </div>
+
         <div className="col-lg-6">
-          <h2>{car.make} {car.model}</h2>
+          <h2>{car.brand} {car.model}</h2>
           <h3 className="text-primary">${car.price}</h3>
           <p className="text-muted">
             Condition: <strong>{car.condition}</strong>
           </p>
-          <ul className="list-group list-group-flush">
+
+          <ul className="list-group list-group-flush mb-3">
             <li className="list-group-item">Year: {car.year}</li>
             <li className="list-group-item">Mileage: {car.mileage} km</li>
             <li className="list-group-item">Fuel Type: {car.fuelType}</li>
@@ -68,7 +95,17 @@ const CarDetailPage = () => {
             <li className="list-group-item">Doors: {car.doors}</li>
           </ul>
 
-          <button className="btn btn-success mt-3 w-100">Save Listing</button>
+          {/* Owner-only actions */}
+          {isOwner && (
+            <div className="d-flex gap-2 car-detail-buttons mb-3">
+              <Link to={`/cars/edit/${car._id}`} className="btn btn-warning w-50">
+                Edit
+              </Link>
+              <button onClick={handleDelete} className="btn btn-danger w-50">
+                Delete
+              </button>
+            </div>
+          )}
 
           <div className={styles.sellerInfo}>
             <h5>Seller Information</h5>

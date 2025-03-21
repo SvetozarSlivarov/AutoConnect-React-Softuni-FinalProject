@@ -14,7 +14,7 @@ import Contact from "./components/Contact";
 import CarUploadForm from "./components/CarUploadForm";
 import ScrollToTop from "./components/ScrollToTop";
 import ScrollToTopButton from "./components/ScrollToTopButton";
-
+import EditCarForm from "./components/EditCarForm";
 
 function App() {
   return (
@@ -28,7 +28,7 @@ function App() {
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/cars/:id" element={<CarDetailPage />} />
         <Route path="/cars/add" element={<CarUploadForm />} />
-
+        <Route path="/cars/edit/:id" element={<EditCarForm />} />
         
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/contact" element={<Contact />} />
