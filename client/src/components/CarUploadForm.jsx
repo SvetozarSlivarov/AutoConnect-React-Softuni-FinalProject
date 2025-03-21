@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import { useContext } from "react";
-import AuthContext from "../context/AuthContext";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 import { Form, Button, Alert } from "react-bootstrap";
 import styles from "../public/styles/CarUploadForm.module.css";
 
 const CarUploadForm = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [carData, setCarData] = useState({
     brand: "",
     model: "",
@@ -27,26 +28,42 @@ const CarUploadForm = () => {
   });
 
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  // 📌 Обработка на полетата във формата
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCarData({ ...carData, [name]: value });
   };
-  console.log("Current user state:", user);
 
-  // 📌 Обработка на файловете (изображения)
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    setCarData({ ...carData, images: files });
+    const totalImages = carData.images.length + files.length;
+
+    if (totalImages > 5) {
+      const allowedFiles = files.slice(0, 5 - carData.images.length);
+      setCarData((prevData) => ({
+        ...prevData,
+        images: [...prevData.images, ...allowedFiles],
+      }));
+      setError("You can upload a maximum of 5 images.");
+      setTimeout(() => setError(null), 3000);
+    } else {
+      setCarData((prevData) => ({
+        ...prevData,
+        images: [...prevData.images, ...files],
+      }));
+    }
   };
 
-  // 📌 Изпращане на формата
+  const handleRemoveImage = (indexToRemove) => {
+    setCarData((prevData) => ({
+      ...prevData,
+      images: prevData.images.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+
   const handleSubmit = async (e) => {
-    console.log("User before submitting:", user);
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -62,7 +79,6 @@ const CarUploadForm = () => {
           formData.append(key, carData[key]);
         }
       });
-      console.log(user._id);
       formData.append("owner", user._id);
 
       const response = await fetch("http://localhost:5000/api/cars", {
@@ -76,7 +92,10 @@ const CarUploadForm = () => {
       }
 
       setSuccess(true);
-      setTimeout(() => navigate("/catalog"), 2000);
+      setTimeout(() => {
+        setSuccess(false);
+        navigate("/catalog");
+      }, 2000);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -87,9 +106,6 @@ const CarUploadForm = () => {
   return (
     <div className={styles.uploadContainer}>
       <h2 className="text-center mb-4">Sell Your Car</h2>
-
-      {error && <Alert variant="danger">{error}</Alert>}
-      {success && <Alert variant="success">Car listed successfully!</Alert>}
 
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
@@ -159,15 +175,55 @@ const CarUploadForm = () => {
           </Form.Select>
         </Form.Group>
 
+        {/* Image Upload */}
         <Form.Group className="mb-3">
-          <Form.Label>Upload Images</Form.Label>
-          <Form.Control type="file" multiple onChange={handleFileChange} required />
+          <Form.Label>Upload Images (max 5)</Form.Label>
+          <Form.Control type="file" multiple onChange={handleFileChange} accept="image/*" />
         </Form.Group>
+
+        {/* Preview */}
+        {carData.images.length > 0 && (
+          <div className="mb-3">
+            <h5>Selected Images</h5>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+              {carData.images.map((file, index) => (
+                <div key={index} style={{ position: "relative" }}>
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`preview-${index}`}
+                    style={{ width: "100px", height: "auto", borderRadius: "8px" }}
+                  />
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleRemoveImage(index)}
+                    style={{ position: "absolute", top: 0, right: 0 }}
+                  >
+                    ✕
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <Button type="submit" variant="primary" disabled={loading} className={styles.submitButton}>
           {loading ? "Uploading..." : "Submit Listing"}
         </Button>
       </Form>
+
+      <div
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 1000,
+          minWidth: "250px",
+        }}
+      >
+        {error && <Alert variant="danger" dismissible onClose={() => setError(null)}>{error}</Alert>}
+        {success && <Alert variant="success" dismissible onClose={() => setSuccess(false)}>Car listed successfully!</Alert>}
+      </div>
     </div>
   );
 };
