@@ -24,11 +24,31 @@ export const getCarController = async (req, res) => {
 //  POST (със снимки)
 export const createCarController = async (req, res) => {
     try {
-      const { brand, model, year, price, fuelType, transmission, power, mileage, color, description, condition, doors, seats, drivetrain, features, owner } = req.body;
+      const {
+        brand,
+        model,
+        year,
+        price,
+        fuelType,
+        transmission,
+        power,
+        mileage,
+        color,
+        description,
+        condition,
+        doors,
+        seats,
+        drivetrain,
+        features
+      } = req.body;
   
-      // Извличане на URL-ите от Cloudinary
+      // 🖼️ Extract image URLs (assuming you're using Cloudinary or similar)
       const imageUrls = req.files.map(file => file.path);
   
+      // 📌 Parse features (if it's sent as a JSON string)
+      const parsedFeatures = typeof features === "string" ? JSON.parse(features) : features;
+  
+      // 🚫 DO NOT trust owner from req.body!
       const newCar = await Car.create({
         brand,
         model,
@@ -44,14 +64,15 @@ export const createCarController = async (req, res) => {
         doors,
         seats,
         drivetrain,
-        features,
-        owner,
-        images: imageUrls, // 🖼️ Запазваме URL-ите в базата
+        features: parsedFeatures,
+        images: imageUrls,
+        owner: req.user.id, // ✅ Owner comes from the verified token
       });
   
       res.status(201).json(newCar);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      console.error("Create Car Error:", error);
+      res.status(400).json({ message: error.message || "Failed to create car." });
     }
   };
 

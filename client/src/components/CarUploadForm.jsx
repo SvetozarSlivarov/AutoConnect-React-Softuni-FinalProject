@@ -5,7 +5,7 @@ import { Form, Button, Alert } from "react-bootstrap";
 import styles from "../public/styles/CarUploadForm.module.css";
 
 const CarUploadForm = () => {
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [carData, setCarData] = useState({
@@ -211,13 +211,15 @@ const CarUploadForm = () => {
           formData.append(key, carData[key]);
         }
       });
-      formData.append("owner", user._id);
-
+      console.log(token)
       const response = await fetch("http://localhost:5000/api/cars", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, // ⬅ важно: трябва да е token от user или AuthContext
+        },
         body: formData,
       });
-
+      
       const data = await response.json();
       if (!response.ok) {
         throw new Error(data.message || "Failed to upload car.");
