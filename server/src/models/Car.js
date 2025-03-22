@@ -20,7 +20,12 @@ const carSchema = new mongoose.Schema(
     mileage: { type: Number, required: true },
     color: { type: String, required: true },
     description: { type: String },
-    images: [{ type: String, required: true }],
+    images: [
+      {
+        url: { type: String, required: true },
+        public_id: { type: String, required: true },
+      }
+    ],
     condition: { 
       type: String, 
       enum: ["New", "Used"], 

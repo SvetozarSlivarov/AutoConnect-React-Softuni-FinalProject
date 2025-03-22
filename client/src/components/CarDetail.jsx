@@ -12,7 +12,6 @@ const CarDetailPage = () => {
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [owner, setOwner] = useState(null)
 
   useEffect(() => {
     const fetchCar = async () => {
@@ -30,7 +29,7 @@ const CarDetailPage = () => {
 
     fetchCar();
   }, [id]);
-  
+
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this listing?")) {
       try {
@@ -42,7 +41,6 @@ const CarDetailPage = () => {
         });
 
         if (!res.ok) throw new Error("Failed to delete");
-
         navigate("/catalog");
       } catch (err) {
         alert("Error: " + err.message);
@@ -52,6 +50,7 @@ const CarDetailPage = () => {
 
   const isOwner = user && car?.owner === user._id;
   console.log(isOwner, user, car?.owner)
+
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
   if (!car) return null;
@@ -61,15 +60,15 @@ const CarDetailPage = () => {
       <div className="row">
         <div className="col-lg-6">
           <img
-            src={car.images[0]}
+            src={car.images?.[0]?.url || "/placeholder.jpg"}
             className={styles.mainImage}
             alt={car.model}
           />
           <div className={styles.imageGallery}>
-            {car.images.slice(1).map((img, index) => (
+            {car.images?.slice(1).map((img, index) => (
               <img
                 key={index}
-                src={img}
+                src={img.url}
                 className={styles.galleryImage}
                 alt={`Gallery ${index}`}
               />
@@ -89,10 +88,8 @@ const CarDetailPage = () => {
             <li className="list-group-item">Mileage: {car.mileage} km</li>
             <li className="list-group-item">Fuel Type: {car.fuelType}</li>
             <li className="list-group-item">Transmission: {car.transmission}</li>
-            <li className="list-group-item">Drivetrain: {car.drivetrain}</li>
+            {car.drivetrain && <li className="list-group-item">Drivetrain: {car.drivetrain}</li>}
             <li className="list-group-item">Power: {car.power} HP</li>
-            <li className="list-group-item">Seats: {car.seats}</li>
-            <li className="list-group-item">Doors: {car.doors}</li>
           </ul>
 
           {/* Owner-only actions */}
@@ -109,8 +106,8 @@ const CarDetailPage = () => {
 
           <div className={styles.sellerInfo}>
             <h5>Seller Information</h5>
-            <p><strong>Name:</strong> {car.owner.firstName} {car.owner.lastName}</p>
-            <p><strong>Email:</strong> {car.owner.email}</p>
+            <p><strong>Name:</strong> {car.owner?.firstName || "N/A"} {car.owner?.lastName || ""}</p>
+            <p><strong>Email:</strong> {car.owner?.email || "N/A"}</p>
           </div>
         </div>
       </div>

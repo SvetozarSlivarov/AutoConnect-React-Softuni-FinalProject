@@ -21,10 +21,9 @@ const EditCarForm = () => {
     color: "",
     description: "",
     condition: "Used",
-    doors: "",
-    seats: "",
     features: [],
-    images: []
+    newImages: [],
+    existingImages: []
   });
 
   const [loading, setLoading] = useState(true);
@@ -33,12 +32,134 @@ const EditCarForm = () => {
   const [showFeatures, setShowFeatures] = useState(false);
 
   const featureCategories = {
-    Comfort: ["Air Conditioning", "Climate Control", "Heated Seats", "Leather Interior"],
-    Safety: ["ABS", "Airbags - Driver", "Airbags - Passenger", "Lane Assist"],
-    Technology: ["Bluetooth", "USB Port", "Navigation System"],
-    Exterior: ["Alloy Wheels", "Electric Mirrors", "Roof Rails"],
-    Interior: ["ISOFIX", "Fold-Flat Seats", "Floor Mats"],
-    Vehicle: ["2 Doors", "4 Doors", "5 Seats", "Left-Hand Drive"]
+    "Comfort": [
+      "Air Conditioning",
+      "Climate Control",
+      "Heated Seats",
+      "Heated Steering Wheel",
+      "Leather Interior",
+      "Seat Memory",
+      "Sunroof",
+      "Panoramic Sunroof",
+      "Split Folding Rear Seats",
+      "Armrest",
+      "Adjustable Steering Wheel",
+      "Rear Air Vents",
+      "Ventilated Seats"
+    ],
+    "Safety": [
+      "ABS (Anti-lock Braking System)",
+      "Airbags - Driver",
+      "Airbags - Passenger",
+      "Airbags - Side",
+      "Blind Spot Monitoring",
+      "Lane Departure Warning",
+      "Lane Assist",
+      "Hill Start Assist",
+      "Parking Sensors - Front",
+      "Parking Sensors - Rear",
+      "Rear View Camera",
+      "Backup Camera",
+      "Reversing Camera",
+      "Daytime Running Lights",
+      "Fog Lights",
+      "LED Headlights",
+      "Traffic Sign Recognition",
+      "ESP (Electronic Stability Program)",
+      "Tyre Pressure Monitoring System",
+      "Adaptive Cruise Control",
+      "Auto Emergency Braking",
+      "Traction Control"
+    ],
+    "Technology": [
+      "Bluetooth",
+      "USB Port",
+      "Wireless Charging",
+      "Navigation System",
+      "Apple CarPlay",
+      "Android Auto",
+      "Satellite Radio",
+      "Voice Control",
+      "Multi-Function Steering Wheel",
+      "Keyless Entry",
+      "Start/Stop System",
+      "Remote Central Locking",
+      "Heads-Up Display",
+      "Touchscreen Display",
+      "Digital Dashboard",
+      "Smartphone Integration"
+    ],
+    "Exterior": [
+      "Alloy Wheels",
+      "Steel Wheels",
+      "Electric Mirrors",
+      "Heated Mirrors",
+      "Electric Windows",
+      "Automatic Headlights",
+      "Rain Sensors",
+      "Tow Bar",
+      "Roof Rails",
+      "Power Tailgate",
+      "Hands-Free Trunk Access",
+      "Tinted Windows",
+      "Chrome Trim",
+      "Sunshade",
+      "Sport Body Kit"
+    ],
+    "Drivetrain & Handling": [
+      "FWD (Front-Wheel Drive)",
+      "RWD (Rear-Wheel Drive)",
+      "AWD (All-Wheel Drive)",
+      "4WD (4x4)",
+      "Limited Slip Differential",
+      "Sport Suspension",
+      "Adaptive Suspension",
+      "Hydraulic Steering",
+      "Electric Steering",
+      "Adjustable Suspension",
+      "Paddle Shifters"
+    ],
+    "Lighting & Visibility": [
+      "Bi-Xenon Headlights",
+      "Matrix LED",
+      "Cornering Lights",
+      "Automatic High Beam",
+      "Rear Fog Lights",
+      "Front Fog Lights",
+      "Light Sensor",
+      "Headlight Washers"
+    ],
+    "Interior": [
+      "Ambient Lighting",
+      "Leather Steering Wheel",
+      "Wood Trim",
+      "Aluminium Trim",
+      "Third Row Seating",
+      "Fold-Flat Seats",
+      "ISOFIX (Child Seat Anchors)",
+      "Sun Blinds",
+      "Floor Mats",
+      "Cargo Cover"
+    ],
+    "Vehicle Details": [
+      "2 Doors",
+      "3 Doors",
+      "4 Doors",
+      "5 Doors",
+      "2 Seats",
+      "4 Seats",
+      "5 Seats",
+      "7 Seats",
+      "8+ Seats",
+      "Left-Hand Drive",
+      "Right-Hand Drive",
+      "Euro 4",
+      "Euro 5",
+      "Euro 6",
+      "Original Paint",
+      "Garage Kept",
+      "Non-Smoker Vehicle"
+    ]
   };
 
   useEffect(() => {
@@ -49,7 +170,12 @@ const EditCarForm = () => {
         });
         if (!res.ok) throw new Error("Failed to fetch car data");
         const data = await res.json();
-        setCarData({ ...data, images: [], features: data.features || [] });
+        setCarData(prev => ({
+          ...prev,
+          ...data,
+          features: data.features || [],
+          existingImages: data.images || []
+        }));
       } catch (err) {
         setError(err.message);
       } finally {
@@ -66,21 +192,28 @@ const EditCarForm = () => {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    const totalImages = carData.images.length + files.length;
+    const totalImages = carData.newImages.length + files.length;
     if (totalImages > 5) {
-      const allowed = files.slice(0, 5 - carData.images.length);
-      setCarData((prev) => ({ ...prev, images: [...prev.images, ...allowed] }));
+      const allowed = files.slice(0, 5 - carData.newImages.length);
+      setCarData((prev) => ({ ...prev, newImages: [...prev.newImages, ...allowed] }));
       setError("Maximum 5 images allowed.");
       setTimeout(() => setError(null), 3000);
     } else {
-      setCarData((prev) => ({ ...prev, images: [...prev.images, ...files] }));
+      setCarData((prev) => ({ ...prev, newImages: [...prev.newImages, ...files] }));
     }
   };
 
-  const handleRemoveImage = (index) => {
+  const handleRemoveNewImage = (index) => {
     setCarData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index),
+      newImages: prev.newImages.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleRemoveExistingImage = (public_id) => {
+    setCarData((prev) => ({
+      ...prev,
+      existingImages: prev.existingImages.filter(img => img.public_id !== public_id)
     }));
   };
 
@@ -91,16 +224,11 @@ const EditCarForm = () => {
 
     try {
       const formData = new FormData();
-
-      Object.entries(carData).forEach(([key, value]) => {
-        if (key === "images") {
-          value.forEach((img) => formData.append("images", img));
-        } else if (key === "features") {
-          formData.append("features", JSON.stringify(value));
-        } else {
-          formData.append(key, value);
-        }
-      });
+      const fields = ["brand", "model", "year", "price", "fuelType", "transmission", "power", "mileage", "color", "description", "condition"];
+      fields.forEach((key) => formData.append(key, carData[key]));
+      formData.append("features", JSON.stringify(carData.features));
+      formData.append("existingImages", JSON.stringify(carData.existingImages));
+      carData.newImages.forEach((img) => formData.append("images", img));
 
       const res = await fetch(`http://localhost:5000/api/cars/${id}`, {
         method: "PUT",
@@ -123,7 +251,7 @@ const EditCarForm = () => {
     <div className={styles.uploadContainer}>
       <h2 className="text-center mb-4">Edit Your Car</h2>
       <Form onSubmit={handleSubmit} encType="multipart/form-data">
-        {["brand", "model", "year", "price", "power", "mileage", "color", "description", "doors", "seats"].map((field) => (
+        {["brand", "model", "year", "price", "power", "mileage", "color", "description"].map((field) => (
           <Form.Group className="mb-3" key={field}>
             <Form.Label>{field.charAt(0).toUpperCase() + field.slice(1)}</Form.Label>
             <Form.Control
@@ -163,45 +291,39 @@ const EditCarForm = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label style={{ display: "block" }}>Features</Form.Label>
+          <Form.Label>Features</Form.Label>
           <Button
             variant="outline-secondary"
             size="sm"
             onClick={() => setShowFeatures((prev) => !prev)}
-            aria-controls="features-collapse"
-            aria-expanded={showFeatures}
           >
             {showFeatures ? "Hide Features" : "Show Features"}
           </Button>
 
           {showFeatures && (
-            <div id="features-collapse" className="mt-3 p-3 border rounded bg-light">
+            <div className="mt-3 p-3 border rounded bg-light">
               {Object.entries(featureCategories).map(([category, features]) => (
                 <div key={category} className="mb-3">
                   <h6>{category}</h6>
                   <div className="d-flex flex-wrap gap-2">
-                    {features.map((feature) => {
-                      const isChecked = carData.features.includes(feature);
-                      return (
-                        <Form.Check
-                          key={feature}
-                          type="checkbox"
-                          id={`feature-${feature}`}
-                          label={feature}
-                          value={feature}
-                          checked={isChecked}
-                          onChange={(e) => {
-                            const { checked, value } = e.target;
-                            setCarData((prev) => ({
-                              ...prev,
-                              features: checked
-                                ? [...prev.features, value]
-                                : prev.features.filter((f) => f !== value),
-                            }));
-                          }}
-                        />
-                      );
-                    })}
+                    {features.map((feature) => (
+                      <Form.Check
+                        key={feature}
+                        type="checkbox"
+                        label={feature}
+                        value={feature}
+                        checked={carData.features.includes(feature)}
+                        onChange={(e) => {
+                          const { checked, value } = e.target;
+                          setCarData((prev) => ({
+                            ...prev,
+                            features: checked
+                              ? [...prev.features, value]
+                              : prev.features.filter((f) => f !== value),
+                          }));
+                        }}
+                      />
+                    ))}
                   </div>
                 </div>
               ))}
@@ -214,11 +336,36 @@ const EditCarForm = () => {
           <Form.Control type="file" multiple onChange={handleFileChange} accept="image/*" />
         </Form.Group>
 
-        {carData.images.length > 0 && (
+        {carData.existingImages.length > 0 && (
           <div className="mb-3">
-            <h5>Selected Images</h5>
+            <h5>Existing Images</h5>
             <div className="d-flex flex-wrap gap-2">
-              {carData.images.map((file, i) => (
+              {carData.existingImages.map((img) => (
+                <div key={img.public_id} style={{ position: "relative" }}>
+                  <img
+                    src={img.url}
+                    alt={img.public_id}
+                    style={{ width: "100px", borderRadius: "8px" }}
+                  />
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => handleRemoveExistingImage(img.public_id)}
+                    style={{ position: "absolute", top: 0, right: 0 }}
+                  >
+                    ✕
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {carData.newImages.length > 0 && (
+          <div className="mb-3">
+            <h5>New Images</h5>
+            <div className="d-flex flex-wrap gap-2">
+              {carData.newImages.map((file, i) => (
                 <div key={i} style={{ position: "relative" }}>
                   <img
                     src={URL.createObjectURL(file)}
@@ -228,7 +375,7 @@ const EditCarForm = () => {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() => handleRemoveImage(i)}
+                    onClick={() => handleRemoveNewImage(i)}
                     style={{ position: "absolute", top: 0, right: 0 }}
                   >
                     ✕

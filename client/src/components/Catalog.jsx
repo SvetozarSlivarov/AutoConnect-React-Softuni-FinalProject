@@ -69,9 +69,9 @@ const Catalog = () => {
             <div className="col-lg-4 col-md-6 mb-4" key={car._id}>
               <div className="card car-card">
                 <img
-                  src={car.images[0]}
+                  src={car.images?.[0]?.url || "/placeholder.jpg"}
                   className="card-img-top car-image"
-                  alt={`${car.make} ${car.model}`}
+                  alt={`${car.brand} ${car.model}`}
                 />
                 <div className="card-body">
                   <h5 className="card-title">{car.make} {car.model}</h5>

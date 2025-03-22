@@ -16,7 +16,8 @@ const router = express.Router();
 router.get("/", getAllCarsController);
 router.get("/:id", getCarController);
 router.post("/", verifyToken, upload.array("images", 5), createCarController);
-router.put("/:id", verifyToken, isOwner, updateCarController);
+router.put("/:id", verifyToken, isOwner, upload.array("images", 5), updateCarController);
+
 router.delete("/:id", verifyToken, isOwner, deleteCarController);
 
 export default router;
