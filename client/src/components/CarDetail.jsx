@@ -10,16 +10,26 @@ const CarDetailPage = () => {
   const { user, token } = useContext(AuthContext);
 
   const [car, setCar] = useState(null);
+  const [owner, setOwner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Step 1: Fetch the car
   useEffect(() => {
-    const fetchCar = async () => {
+    const fetchCarAndOwner = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/cars/${id}`);
-        if (!response.ok) throw new Error("Car not found");
-        const data = await response.json();
-        setCar(data);
+        const carRes = await fetch(`http://localhost:5000/api/cars/${id}`);
+        if (!carRes.ok) throw new Error("Car not found");
+        const carData = await carRes.json();
+        setCar(carData);
+
+        // Step 2: Fetch the owner if carData.owner is an ID
+        if (carData.owner) {
+          const ownerRes = await fetch(`http://localhost:5000/api/users/${carData.owner}`);
+          if (!ownerRes.ok) throw new Error("Owner not found");
+          const ownerData = await ownerRes.json();
+          setOwner(ownerData);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -27,7 +37,7 @@ const CarDetailPage = () => {
       }
     };
 
-    fetchCar();
+    fetchCarAndOwner();
   }, [id]);
 
   const handleDelete = async () => {
@@ -49,7 +59,6 @@ const CarDetailPage = () => {
   };
 
   const isOwner = user && car?.owner === user._id;
-  console.log(isOwner, user, car?.owner)
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
   if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
@@ -106,8 +115,14 @@ const CarDetailPage = () => {
 
           <div className={styles.sellerInfo}>
             <h5>Seller Information</h5>
-            <p><strong>Name:</strong> {car.owner?.firstName || "N/A"} {car.owner?.lastName || ""}</p>
-            <p><strong>Email:</strong> {car.owner?.email || "N/A"}</p>
+            {owner ? (
+              <>
+                <p><strong>Name:</strong> {owner.firstName} {owner.lastName}</p>
+                <p><strong>Email:</strong> {owner.email}</p>
+              </>
+            ) : (
+              <p>Owner information not available.</p>
+            )}
           </div>
         </div>
       </div>
