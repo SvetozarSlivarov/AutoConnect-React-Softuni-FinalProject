@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { Form, Button, Alert } from "react-bootstrap";
 import styles from "../public/styles/CarUploadForm.module.css";
+import featureCategories from "../constants/featureCategories";
+
 
 const EditCarForm = () => {
   const { id } = useParams();
@@ -30,137 +32,6 @@ const EditCarForm = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [showFeatures, setShowFeatures] = useState(false);
-
-  const featureCategories = {
-    "Comfort": [
-      "Air Conditioning",
-      "Climate Control",
-      "Heated Seats",
-      "Heated Steering Wheel",
-      "Leather Interior",
-      "Seat Memory",
-      "Sunroof",
-      "Panoramic Sunroof",
-      "Split Folding Rear Seats",
-      "Armrest",
-      "Adjustable Steering Wheel",
-      "Rear Air Vents",
-      "Ventilated Seats"
-    ],
-    "Safety": [
-      "ABS (Anti-lock Braking System)",
-      "Airbags - Driver",
-      "Airbags - Passenger",
-      "Airbags - Side",
-      "Blind Spot Monitoring",
-      "Lane Departure Warning",
-      "Lane Assist",
-      "Hill Start Assist",
-      "Parking Sensors - Front",
-      "Parking Sensors - Rear",
-      "Rear View Camera",
-      "Backup Camera",
-      "Reversing Camera",
-      "Daytime Running Lights",
-      "Fog Lights",
-      "LED Headlights",
-      "Traffic Sign Recognition",
-      "ESP (Electronic Stability Program)",
-      "Tyre Pressure Monitoring System",
-      "Adaptive Cruise Control",
-      "Auto Emergency Braking",
-      "Traction Control"
-    ],
-    "Technology": [
-      "Bluetooth",
-      "USB Port",
-      "Wireless Charging",
-      "Navigation System",
-      "Apple CarPlay",
-      "Android Auto",
-      "Satellite Radio",
-      "Voice Control",
-      "Multi-Function Steering Wheel",
-      "Keyless Entry",
-      "Start/Stop System",
-      "Remote Central Locking",
-      "Heads-Up Display",
-      "Touchscreen Display",
-      "Digital Dashboard",
-      "Smartphone Integration"
-    ],
-    "Exterior": [
-      "Alloy Wheels",
-      "Steel Wheels",
-      "Electric Mirrors",
-      "Heated Mirrors",
-      "Electric Windows",
-      "Automatic Headlights",
-      "Rain Sensors",
-      "Tow Bar",
-      "Roof Rails",
-      "Power Tailgate",
-      "Hands-Free Trunk Access",
-      "Tinted Windows",
-      "Chrome Trim",
-      "Sunshade",
-      "Sport Body Kit"
-    ],
-    "Drivetrain & Handling": [
-      "FWD (Front-Wheel Drive)",
-      "RWD (Rear-Wheel Drive)",
-      "AWD (All-Wheel Drive)",
-      "4WD (4x4)",
-      "Limited Slip Differential",
-      "Sport Suspension",
-      "Adaptive Suspension",
-      "Hydraulic Steering",
-      "Electric Steering",
-      "Adjustable Suspension",
-      "Paddle Shifters"
-    ],
-    "Lighting & Visibility": [
-      "Bi-Xenon Headlights",
-      "Matrix LED",
-      "Cornering Lights",
-      "Automatic High Beam",
-      "Rear Fog Lights",
-      "Front Fog Lights",
-      "Light Sensor",
-      "Headlight Washers"
-    ],
-    "Interior": [
-      "Ambient Lighting",
-      "Leather Steering Wheel",
-      "Wood Trim",
-      "Aluminium Trim",
-      "Third Row Seating",
-      "Fold-Flat Seats",
-      "ISOFIX (Child Seat Anchors)",
-      "Sun Blinds",
-      "Floor Mats",
-      "Cargo Cover"
-    ],
-    "Vehicle Details": [
-      "2 Doors",
-      "3 Doors",
-      "4 Doors",
-      "5 Doors",
-      "2 Seats",
-      "4 Seats",
-      "5 Seats",
-      "7 Seats",
-      "8+ Seats",
-      "Left-Hand Drive",
-      "Right-Hand Drive",
-      "Euro 4",
-      "Euro 5",
-      "Euro 6",
-      "Original Paint",
-      "Garage Kept",
-      "Non-Smoker Vehicle"
-    ]
-  };
 
   useEffect(() => {
     const fetchCar = async () => {
