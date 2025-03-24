@@ -121,7 +121,6 @@ export const updateCarController = async (req, res) => {
     }
   };
 
-// DELETE
 export const deleteCarController = async (req, res) => {
     try {
         await deleteCar(req.params.id);

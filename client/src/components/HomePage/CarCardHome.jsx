@@ -1,28 +1,30 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import styles from "../../public/styles/CarCardHome.module.css";
 
 const CarCard = ({ car }) => {
+  const imageUrl = Array.isArray(car.images) ? car.images[0]?.url : "../../public/pictures/No_image_available.svg.png";
+
   return (
-    <div className="col-lg-6 col-md-12">
-      <div className="custom-car-card">
-        <div className="row g-0">
-
-          <div className="col-6 custom-card-image">
-            <img src={car.image} className="custom-car-image" alt={car.name} />
+    <div className="col-lg-6 col-md-12 mb-4">
+      <Link to={`/cars/${car._id}`} className={styles.cardLink}>
+        <div className={styles.carCard}>
+          <div className={styles.imageContainer}>
+            <img src={imageUrl} alt={`${car.brand} ${car.model}`} className={styles.carImage} />
           </div>
-
-          <div className="col-6 custom-card-body">
-            <h3 className="custom-car-title">{car.name}</h3>
-            <p className="custom-car-price">{car.price}</p>
-            <ul className="custom-car-info">
-              <li><i className="fas fa-calendar"></i> {car.year}</li>
-              <li><i className="fas fa-gauge"></i> {car.mileage}</li>
-              <li><i className="fas fa-car"></i> {car.transmission}</li>
-              <li><i className="fas fa-gas-pump"></i> {car.fuel}</li>
-              <li><i className="fas fa-palette"></i> {car.color}</li>
+          <div className={styles.details}>
+            <h3 className={styles.title}>{car.brand} {car.model}</h3>
+            <p className={styles.price}>${car.price?.toLocaleString()}</p>
+            <ul className={styles.infoList}>
+              <li>{car.year}</li>
+              <li>{car.mileage} km</li>
+              <li>{car.transmission}</li>
+              <li>{car.fuelType}</li>
+              <li>{car.color}</li>
             </ul>
           </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };
