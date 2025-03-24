@@ -7,15 +7,13 @@ const Login = () => {
     const [formData, setFormData] = useState({ email: "", password: "" });
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { login } = useContext(AuthContext); // Взимаме функцията login от AuthContext
+    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    // Обработване на промяна в input полетата
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // Изпращане на формата
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -23,8 +21,8 @@ const Login = () => {
 
         try {
             const data = await loginUser(formData.email, formData.password);
-            login(data.token, data.user); // Записваме user-а в контекста
-            navigate("/"); // Пренасочваме към началната страница
+            login(data.token, data.user);
+            navigate("/");
         } catch (error) {
             setError(error.message);
         } finally {

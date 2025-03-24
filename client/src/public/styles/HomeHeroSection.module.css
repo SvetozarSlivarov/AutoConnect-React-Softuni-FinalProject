@@ -1,64 +1,63 @@
 .heroSection {
-    background: url("../pictures/hero-section-picture.jpg") no-repeat left center;
-    background-size: cover;
-    height: 500px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding-left: 50px;
-    color: white;
+  background: url("../pictures/hero-section-picture.jpg") no-repeat left center;
+  background-size: cover;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 50px;
+  color: white;
+}
+
+.content {
+  max-width: 500px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.heroTitle {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.heroText {
+  font-size: 1.2rem;
+}
+
+.btnBrowse {
+  background-color: #6cb5be;
+  color: white;
+  border: none;
+  margin-right: 10px;
+  font-size: 1.2rem;
+  padding: 10px 30px;
+  border-radius: 30px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.btnBrowse:hover {
+  background-color: #376167;
+  transform: scale(1.075);
+}
+
+.btnSell {
+  background-color: #6cb5be;
+  color: white;
+  border: none;
+  font-size: 1.2rem;
+  padding: 10px 30px;
+  border-radius: 30px;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.btnSell:hover {
+  background-color: #376167;
+  transform: scale(1.075);
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    background-position: right center;
+    height: 300px;
   }
-  
-  .content {
-    max-width: 500px;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  
-  .heroTitle {
-    font-size: 3rem;
-    font-weight: bold;
-  }
-  
-  .heroText {
-    font-size: 1.2rem;
-  }
-  
-  .btnBrowse {
-    background-color: #6cb5be;
-    color: white;
-    border: none;
-    margin-right: 10px;
-    font-size: 1.2rem;
-    padding: 10px 30px;
-    border-radius: 30px;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-  }
-  
-  .btnBrowse:hover {
-    background-color: #376167;
-    transform: scale(1.075);
-  }
-  
-  .btnSell {
-    background-color: #6cb5be;
-    color: white;
-    border: none;
-    font-size: 1.2rem;
-    padding: 10px 30px;
-    border-radius: 30px;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-  }
-  
-  .btnSell:hover {
-    background-color: #376167;
-    transform: scale(1.075);
-  }
-  
-  @media (max-width: 768px) {
-    .heroSection {
-      background-position: right center;
-      height: 300px;
-    }
-  }
-  
+}

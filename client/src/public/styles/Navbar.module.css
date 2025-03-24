@@ -1,72 +1,70 @@
-/* src/public/styles/Navbar.module.css */
 .navbar {
-    background: linear-gradient(90deg, #000000, #101010);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .navbarBrand {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: white;
-    letter-spacing: 2px;
-  }
-  
-  .navbarBrand:hover {
-    color: #6cb5be;
-    transform: scale(1.05);
-  }
-  
-  .navLink {
-    color: white;
-    font-size: 1.1rem;
-    transition: color 0.3s ease, text-shadow 0.3s ease;
-  }
-  
-  .navLink:hover {
-    color: #6cb5be;
-  }
-  
-  .navbarToggler {
-    border: none;
-  }
-  
-  .navbarTogglerIcon {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-  }
-  
-  .scrolled {
-    background: #343a40 !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  }
-  
-  .navbarCollapse {
-    text-align: center;
-  }
-  
-  .navbarNav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .dropdownMenu {
-    background-color: #000000;
-  }
-  
-  .dropdownItem {
-    color: white;
-  }
-  
-  .dropdownItem:hover {
-    background-color: #6cb5be;
-  }
-  
-  .starProfile:hover {
-    color: #6cb5be;
-  }
-  
-  .userInitials {
-    color: #6cb5be;
-  }
-  
+  background: linear-gradient(90deg, #000000, #101010);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbarBrand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 2px;
+}
+
+.navbarBrand:hover {
+  color: #6cb5be;
+  transform: scale(1.05);
+}
+
+.navLink {
+  color: white;
+  font-size: 1.1rem;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.navLink:hover {
+  color: #6cb5be;
+}
+
+.navbarToggler {
+  border: none;
+}
+
+.navbarTogglerIcon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.scrolled {
+  background: #343a40 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.navbarCollapse {
+  text-align: center;
+}
+
+.navbarNav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dropdownMenu {
+  background-color: #000000;
+}
+
+.dropdownItem {
+  color: white;
+}
+
+.dropdownItem:hover {
+  background-color: #6cb5be;
+}
+
+.starProfile:hover {
+  color: #6cb5be;
+}
+
+.userInitials {
+  color: #6cb5be;
+}

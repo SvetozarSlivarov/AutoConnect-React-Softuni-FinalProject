@@ -25,10 +25,10 @@ export const checkEmailExists = async (email) => {
         }
 
         const data = await res.json();
-        console.log("Email check response:", data); // Дебъгване на отговора
-        return data.exists; // Връща `true`, ако имейлът съществува, иначе `false`
+        console.log("Email check response:", data);
+        return data.exists;
     } catch (error) {
         console.error("Error checking email:", error);
-        return false; // Ако има грешка, по-добре да върнем `false`, за да не блокираме регистрацията
+        return false;
     }
 };
