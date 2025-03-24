@@ -5,7 +5,6 @@ import { Form, Button, Alert } from "react-bootstrap";
 import styles from "../public/styles/CarUploadForm.module.css";
 import featureCategories from "../constants/featureCategories";
 
-
 const EditCarForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -212,18 +211,9 @@ const EditCarForm = () => {
             <h5>Existing Images</h5>
             <div className="d-flex flex-wrap gap-2">
               {carData.existingImages.map((img) => (
-                <div key={img.public_id} style={{ position: "relative" }}>
-                  <img
-                    src={img.url}
-                    alt={img.public_id}
-                    style={{ width: "100px", borderRadius: "8px" }}
-                  />
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleRemoveExistingImage(img.public_id)}
-                    style={{ position: "absolute", top: 0, right: 0 }}
-                  >
+                <div key={img.public_id} className={styles.imageWrapper}>
+                  <img src={img.url} alt={img.public_id} className={styles.imagePreview} />
+                  <Button variant="danger" size="sm" onClick={() => handleRemoveExistingImage(img.public_id)} className={styles.removeButton}>
                     ✕
                   </Button>
                 </div>
@@ -237,18 +227,9 @@ const EditCarForm = () => {
             <h5>New Images</h5>
             <div className="d-flex flex-wrap gap-2">
               {carData.newImages.map((file, i) => (
-                <div key={i} style={{ position: "relative" }}>
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`preview-${i}`}
-                    style={{ width: "100px", borderRadius: "8px" }}
-                  />
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleRemoveNewImage(i)}
-                    style={{ position: "absolute", top: 0, right: 0 }}
-                  >
+                <div key={i} className={styles.imageWrapper}>
+                  <img src={URL.createObjectURL(file)} alt={`preview-${i}`} className={styles.imagePreview} />
+                  <Button variant="danger" size="sm" onClick={() => handleRemoveNewImage(i)} className={styles.removeButton}>
                     ✕
                   </Button>
                 </div>
@@ -262,7 +243,7 @@ const EditCarForm = () => {
         </Button>
       </Form>
 
-      <div style={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 1000, minWidth: "250px" }}>
+      <div className={styles.alertContainer}>
         {error && <Alert variant="danger" dismissible onClose={() => setError(null)}>{error}</Alert>}
         {success && <Alert variant="success" dismissible onClose={() => setSuccess(false)}>Car updated successfully!</Alert>}
       </div>
