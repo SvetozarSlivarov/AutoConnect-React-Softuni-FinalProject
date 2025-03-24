@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import CarCard from "../components/HomePage/CarCardHome.jsx";
-import HowItworks from "../components/HomePage/HowItWorks.jsx";
-import HeroHomeSection from "../components/HomePage/HeroHomeSection.jsx";
-import WhyChooseUs from "../components/HomePage/WhyChooseUs.jsx";
+import CarCard from "./CarCardHome.jsx";
+import HowItworks from "./HowItWorks.jsx";
+import HeroHomeSection from "./HeroHomeSection.jsx";
+import WhyChooseUs from "./WhyChooseUs.jsx";
 
 const HomePage = () => {
   const [featuredCars, setFeaturedCars] = useState([]);
@@ -14,10 +14,8 @@ const HomePage = () => {
         const res = await fetch("http://localhost:5000/api/cars");
         const data = await res.json();
 
-        // Сортиране по дата (от най-ново към най-старо)
         const sorted = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        // Вземаме само 6-те най-нови
         setFeaturedCars(sorted.slice(0, 6));
       } catch (err) {
         console.error("Failed to load cars:", err);

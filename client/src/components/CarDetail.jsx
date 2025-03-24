@@ -13,8 +13,8 @@ const CarDetailPage = () => {
   const [owner, setOwner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  // Step 1: Fetch the car
   useEffect(() => {
     const fetchCarAndOwner = async () => {
       try {
@@ -23,7 +23,6 @@ const CarDetailPage = () => {
         const carData = await carRes.json();
         setCar(carData);
 
-        // Step 2: Fetch the owner if carData.owner is an ID
         if (carData.owner) {
           const ownerRes = await fetch(`http://localhost:5000/api/users/${carData.owner}`);
           if (!ownerRes.ok) throw new Error("Owner not found");
@@ -69,17 +68,18 @@ const CarDetailPage = () => {
       <div className="row">
         <div className="col-lg-6">
           <img
-            src={car.images?.[0]?.url || "/placeholder.jpg"}
+            src={car.images?.[selectedImageIndex]?.url || "/placeholder.jpg"}
             className={styles.mainImage}
             alt={car.model}
           />
           <div className={styles.imageGallery}>
-            {car.images?.slice(1).map((img, index) => (
+            {car.images?.map((img, index) => (
               <img
                 key={index}
                 src={img.url}
-                className={styles.galleryImage}
+                className={`${styles.galleryImage} ${index === selectedImageIndex ? styles.activeThumb : ""}`}
                 alt={`Gallery ${index}`}
+                onClick={() => setSelectedImageIndex(index)}
               />
             ))}
           </div>
@@ -101,7 +101,6 @@ const CarDetailPage = () => {
             <li className="list-group-item">Power: {car.power} HP</li>
           </ul>
 
-          {/* Owner-only actions */}
           {isOwner && (
             <div className="d-flex gap-2 car-detail-buttons mb-3">
               <Link to={`/cars/edit/${car._id}`} className="btn btn-warning w-50">
