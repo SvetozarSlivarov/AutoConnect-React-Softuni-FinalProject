@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { checkEmailExists, registerUser } from "../services/authService";
 import { isValidEmail, isValidPassword } from "../utils/registerValidation";
 

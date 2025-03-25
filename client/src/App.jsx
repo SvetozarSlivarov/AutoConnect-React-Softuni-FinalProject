@@ -15,6 +15,7 @@ import CarUploadForm from "./components/CarUploadForm";
 import ScrollToTop from "./components/ScrollToTop";
 import ScrollToTopButton from "./components/ScrollToTopButton";
 import EditCarForm from "./components/EditCarForm";
+import UserProfile from "./components/UserProfile";
 
 function App() {
   return (
@@ -34,7 +35,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
 
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-
+        <Route path="/profile" element={<UserProfile />}></Route>
 
         <Route path="*" element={<NotFound />} />
       </Routes>

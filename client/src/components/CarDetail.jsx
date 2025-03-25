@@ -14,6 +14,7 @@ const CarDetailPage = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 	const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+	const [isInWatchlist, setIsInWatchlist] = useState(false);
 
 	useEffect(() => {
 		const fetchCarAndOwner = async () => {
@@ -22,6 +23,10 @@ const CarDetailPage = () => {
 				if (!carRes.ok) throw new Error("Car not found");
 				const carData = await carRes.json();
 				setCar(carData);
+
+				if (user?.watchlist?.includes(carData._id)) {
+					setIsInWatchlist(true);
+				}
 
 				if (carData.owner) {
 					const ownerRes = await fetch(`http://localhost:5000/api/users/${carData.owner}`);
@@ -37,7 +42,7 @@ const CarDetailPage = () => {
 		};
 
 		fetchCarAndOwner();
-	}, [id]);
+	}, [id, user]);
 
 	const handleDelete = async () => {
 		if (window.confirm("Are you sure you want to delete this listing?")) {
@@ -54,6 +59,33 @@ const CarDetailPage = () => {
 			} catch (err) {
 				alert("Error: " + err.message);
 			}
+		}
+	};
+
+	const handleToggleWatchlist = async () => {
+		if (!token) {
+			alert("You must be logged in to use the watchlist.");
+			return;
+		}
+
+		try {
+			console.log(token);
+			console.log(car._id);
+			const res = await fetch('http://localhost:5000/api/users/watchlist', {
+				method: "PUT",
+				headers: {
+				  "Content-Type": "application/json",
+				  Authorization: `Bearer ${token}`,
+				},
+				body: JSON.stringify({ carId: car._id }),
+			  });
+
+			if (!res.ok) throw new Error("Failed to update watchlist");
+
+			const result = await res.json();
+			setIsInWatchlist(result.status === "added");
+		} catch (err) {
+			console.error("Watchlist error:", err.message);
 		}
 	};
 
@@ -101,13 +133,23 @@ const CarDetailPage = () => {
 						<li className="list-group-item">Power: {car.power} HP</li>
 					</ul>
 
-					{isOwner && (
+					{/* Buttons */}
+					{isOwner ? (
 						<div className="d-flex gap-2 car-detail-buttons mb-3">
 							<Link to={`/cars/edit/${car._id}`} className="btn btn-warning w-50">
 								Edit
 							</Link>
 							<button onClick={handleDelete} className="btn btn-danger w-50">
 								Delete
+							</button>
+						</div>
+					) : (
+						<div className="mb-3">
+							<button
+								onClick={handleToggleWatchlist}
+								className={`btn ${isInWatchlist ? "btn-outline-secondary" : "btn-outline-primary"} w-100`}
+							>
+								{isInWatchlist ? "✓ Remove from Watchlist" : "★ Add to Watchlist"}
 							</button>
 						</div>
 					)}

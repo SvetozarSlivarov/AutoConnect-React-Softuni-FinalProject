@@ -1,4 +1,4 @@
-import { getAllUsers, getUserById, updateUser, deleteUser } from "../services/userService.js";
+import {toggleCarInWatchlist ,getUserProfileData ,getAllUsers, getUserById, updateUser, deleteUser } from "../services/userService.js";
 
 export const getAllUsersController = async (req, res) => {
     try {
@@ -35,3 +35,29 @@ export const deleteUserController = async (req, res) => {
         res.status(404).json({ message: error.message });
     }
 };
+export const getUserProfile = async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const profile = await getUserProfileData(userId);
+      res.status(200).json(profile);
+    } catch (error) {
+      res.status(404).json({ message: error.message });
+    }
+  };
+  export const updateWatchlistController = async (req, res) => {
+    try {
+        console.log("Received user:", req.user);
+        console.log("Received carId:", req.body.carId);
+      const { carId } = req.body;
+      const userId = req.user.id;
+  
+      if (!carId) {
+        return res.status(400).json({ message: "Car ID is required." });
+      }
+  
+      const result = await toggleCarInWatchlist(userId, carId);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };

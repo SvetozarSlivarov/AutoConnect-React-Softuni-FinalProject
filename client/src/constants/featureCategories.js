@@ -1,132 +1,62 @@
 const featureCategories = {
-    "Comfort": [
-        "Air Conditioning",
-        "Climate Control",
-        "Heated Seats",
-        "Heated Steering Wheel",
-        "Leather Interior",
-        "Seat Memory",
-        "Sunroof",
-        "Panoramic Sunroof",
-        "Split Folding Rear Seats",
-        "Armrest",
-        "Adjustable Steering Wheel",
-        "Rear Air Vents",
-        "Ventilated Seats"
+    Comfort: [
+      "Air Conditioning",
+      "Climate Control",
+      "Heated Seats",
+      "Leather Interior",
+      "Sunroof",
+      "Panoramic Sunroof",
+      "Armrest",
+      "Rear Air Vents"
     ],
-    "Safety": [
-        "ABS (Anti-lock Braking System)",
-        "Airbags - Driver",
-        "Airbags - Passenger",
-        "Airbags - Side",
-        "Blind Spot Monitoring",
-        "Lane Departure Warning",
-        "Lane Assist",
-        "Hill Start Assist",
-        "Parking Sensors - Front",
-        "Parking Sensors - Rear",
-        "Rear View Camera",
-        "Backup Camera",
-        "Reversing Camera",
-        "Daytime Running Lights",
-        "Fog Lights",
-        "LED Headlights",
-        "Traffic Sign Recognition",
-        "ESP (Electronic Stability Program)",
-        "Tyre Pressure Monitoring System",
-        "Adaptive Cruise Control",
-        "Auto Emergency Braking",
-        "Traction Control"
+    Safety: [
+      "ABS",
+      "Driver Airbag",
+      "Passenger Airbag",
+      "Side Airbags",
+      "Blind Spot Monitoring",
+      "Lane Assist",
+      "Rear View Camera",
+      "Fog Lights",
+      "LED Headlights",
+      "Traction Control"
     ],
-    "Technology": [
-        "Bluetooth",
-        "USB Port",
-        "Wireless Charging",
-        "Navigation System",
-        "Apple CarPlay",
-        "Android Auto",
-        "Satellite Radio",
-        "Voice Control",
-        "Multi-Function Steering Wheel",
-        "Keyless Entry",
-        "Start/Stop System",
-        "Remote Central Locking",
-        "Heads-Up Display",
-        "Touchscreen Display",
-        "Digital Dashboard",
-        "Smartphone Integration"
+    Technology: [
+      "Bluetooth",
+      "USB Port",
+      "Navigation System",
+      "Apple CarPlay",
+      "Android Auto",
+      "Touchscreen Display",
+      "Keyless Entry",
+      "Remote Central Locking"
     ],
-    "Exterior": [
-        "Alloy Wheels",
-        "Steel Wheels",
-        "Electric Mirrors",
-        "Heated Mirrors",
-        "Electric Windows",
-        "Automatic Headlights",
-        "Rain Sensors",
-        "Tow Bar",
-        "Roof Rails",
-        "Power Tailgate",
-        "Hands-Free Trunk Access",
-        "Tinted Windows",
-        "Chrome Trim",
-        "Sunshade",
-        "Sport Body Kit"
+    Exterior: [
+      "Alloy Wheels",
+      "Electric Mirrors",
+      "Heated Mirrors",
+      "Electric Windows",
+      "Automatic Headlights",
+      "Rain Sensors",
+      "Roof Rails"
     ],
-    "Drivetrain & Handling": [
-        "FWD (Front-Wheel Drive)",
-        "RWD (Rear-Wheel Drive)",
-        "AWD (All-Wheel Drive)",
-        "4WD (4x4)",
-        "Limited Slip Differential",
-        "Sport Suspension",
-        "Adaptive Suspension",
-        "Hydraulic Steering",
-        "Electric Steering",
-        "Adjustable Suspension",
-        "Paddle Shifters"
+    Interior: [
+      "Ambient Lighting",
+      "Leather Steering Wheel",
+      "ISOFIX",
+      "Fold-Flat Seats",
+      "Floor Mats"
     ],
-    "Lighting & Visibility": [
-        "Bi-Xenon Headlights",
-        "Matrix LED",
-        "Cornering Lights",
-        "Automatic High Beam",
-        "Rear Fog Lights",
-        "Front Fog Lights",
-        "Light Sensor",
-        "Headlight Washers"
-    ],
-    "Interior": [
-        "Ambient Lighting",
-        "Leather Steering Wheel",
-        "Wood Trim",
-        "Aluminium Trim",
-        "Third Row Seating",
-        "Fold-Flat Seats",
-        "ISOFIX (Child Seat Anchors)",
-        "Sun Blinds",
-        "Floor Mats",
-        "Cargo Cover"
-    ],
-    "Vehicle Details": [
-        "2 Doors",
-        "3 Doors",
-        "4 Doors",
-        "5 Doors",
-        "2 Seats",
-        "4 Seats",
-        "5 Seats",
-        "7 Seats",
-        "8+ Seats",
-        "Left-Hand Drive",
-        "Right-Hand Drive",
-        "Euro 4",
-        "Euro 5",
-        "Euro 6",
-        "Original Paint",
-        "Garage Kept",
-        "Non-Smoker Vehicle"
+    Vehicle: [
+      "3 Doors",
+      "5 Doors",
+      "5 Seats",
+      "7 Seats",
+      "Left-Hand Drive",
+      "Right-Hand Drive",
+      "Euro 6"
     ]
-};
-
-export default featureCategories;
+  };
+  
+  export default featureCategories;
+  
