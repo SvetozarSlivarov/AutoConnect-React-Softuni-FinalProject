@@ -1,6 +1,7 @@
 import Car from "../models/Car.js";
 import { getAllCars, getCarById, createCar, updateCar, deleteCar } from "../services/carService.js";
 import { v2 as cloudinary } from "cloudinary";
+
 //  GET ALL 
 export const getAllCarsController = async (req, res) => {
     try {
@@ -21,7 +22,7 @@ export const getCarController = async (req, res) => {
     }
 };
 
-//  POST (със снимки)
+//  POST
 export const createCarController = async (req, res) => {
     try {
       const {
@@ -41,10 +42,9 @@ export const createCarController = async (req, res) => {
   
       const parsedFeatures = typeof features === "string" ? JSON.parse(features) : features;
   
-      // 🔄 Extract both URL and public_id
       const images = req.files.map(file => ({
         url: file.path,
-        public_id: file.filename, // this is the cloudinary public_id
+        public_id: file.filename,
       }));
   
       const newCar = await Car.create({

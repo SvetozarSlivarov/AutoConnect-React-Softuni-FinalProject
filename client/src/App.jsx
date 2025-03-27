@@ -16,26 +16,44 @@ import ScrollToTop from "./components/ScrollToTop";
 import ScrollToTopButton from "./components/ScrollToTopButton";
 import EditCarForm from "./components/EditCarForm";
 import UserProfile from "./components/UserProfile";
+import ProtectedRoute from "./components/ProtectedRoute";
+import DynamicTitle from "./components/DynamicTitle";
 
 function App() {
   return (
     <>
+
       <Navbar />
       <ScrollToTop />
+      <DynamicTitle />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/cars/:id" element={<CarDetailPage />} />
-        <Route path="/cars/add" element={<CarUploadForm />} />
+        <Route
+          path="/cars/add"
+          element={
+            <ProtectedRoute>
+              <CarUploadForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/cars/edit/:id" element={<EditCarForm />} />
-        
+
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/contact" element={<Contact />} />
 
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
-        <Route path="/profile" element={<UserProfile />}></Route>
 
         <Route path="*" element={<NotFound />} />
       </Routes>

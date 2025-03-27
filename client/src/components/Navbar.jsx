@@ -43,9 +43,7 @@ const Navbar = () => {
                     </ul>
 
                     <div className="d-flex">
-                        <button className={`btn btn-outline-secondary me-2 ${styles.starProfile}`}>
-                            <i className="fas fa-star"></i>
-                        </button>
+                        
 
                         <div className="dropdown">
                             <button

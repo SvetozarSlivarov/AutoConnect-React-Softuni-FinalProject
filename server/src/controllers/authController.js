@@ -1,6 +1,5 @@
 import { registerUser, loginUser, getCurrentUser, emailExists } from "../services/authService.js";
 
-// Регистрация
 export const register = async (req, res) => {
     try {
         const { firstName, lastName, email, password } = req.body;
@@ -11,7 +10,6 @@ export const register = async (req, res) => {
     }
 };
 
-// Логин
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -22,7 +20,6 @@ export const login = async (req, res) => {
     }
 };
 
-// Проверка на потребителя
 export const me = async (req, res) => {
     try {
         const token = req.headers.authorization?.split(" ")[1];

@@ -1,8 +1,11 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Link } from "react-router-dom";
 import styles from '../public/styles/Footer.module.css';
+import AuthContext from "../context/AuthContext";
+
 
 const Footer = () => {
+    const { user } = useContext(AuthContext);
     return (
         <footer className={`footer bg-dark text-light py-5 ${styles.footer}`}>
             <div className="container">
@@ -19,7 +22,9 @@ const Footer = () => {
                             <li><Link to="/" className="text-light text-decoration-none">Home</Link></li>
                             <li><Link to="/catalog" className="text-light text-decoration-none">Shop</Link></li>
                             <li><Link to="/contact" className="text-light text-decoration-none">Contact</Link></li>
-                            <li><Link to="/blog" className="text-light text-decoration-none">Blog</Link></li>
+                            {user && (
+                                <li><Link to="/cars/add" className="text-light text-decoration-none">Sell car</Link></li>                        
+                            )}
                         </ul>
                     </div>
 

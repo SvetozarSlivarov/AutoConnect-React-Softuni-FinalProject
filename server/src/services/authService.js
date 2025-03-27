@@ -4,18 +4,14 @@ import User from "../models/User.js";
 
 const JWT_SECRET =  "mysecretkey";
 
-// Регистрация на нов потребител
 export const registerUser = async (firstName, lastName, email, password) => {
-    // Проверка за съществуващ потребител
     const existingUser = await User.findOne({ email });
     if (existingUser) {
         throw new Error("Email already in use");
     }
 
-    // Хеширане на паролата
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Запазване в базата
     const newUser = new User({
         firstName,
         lastName,
@@ -27,16 +23,14 @@ export const registerUser = async (firstName, lastName, email, password) => {
     return { message: "User created successfully" };
 };
 
-// Логин на потребител
+
 export const loginUser = async (email, password) => {
     const user = await User.findOne({ email });
-    if (!user) throw new Error("Invalid credentials");
+    if (!user) throw new Error("Invalid email or password!");
 
-    // Проверка на паролата
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw new Error("Invalid credentials");
+    if (!isMatch) throw new Error("Invalid email or password!");
 
-    // Генериране на токен
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
 
     return {
@@ -50,7 +44,6 @@ export const loginUser = async (email, password) => {
     };
 };
 
-// Проверка на текущ потребител
 export const getCurrentUser = async (token) => {
     if (!token) throw new Error("Unauthorized");
 
