@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../public/styles/Catalog.module.css";
+import Filters from "./Filters";
+import SortSelector from "./SortSelector";
 
 const Catalog = () => {
     const [cars, setCars] = useState([]);
     const [filteredCars, setFilteredCars] = useState([]);
-    const [sort, setSort] = useState("price");
+    const [sort, setSort] = useState("default");
+    const [showFilters, setShowFilters] = useState(false);
 
     const [filters, setFilters] = useState({
         brand: "",
@@ -26,7 +29,10 @@ const Catalog = () => {
             .then((res) => res.json())
             .then((data) => {
                 setCars(data);
-                setFilteredCars(data);
+
+                // Default sort only on initial load
+                const sorted = [...data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setFilteredCars(sorted);
             })
             .catch((err) => console.error("Error fetching cars:", err));
     }, []);
@@ -54,122 +60,58 @@ const Catalog = () => {
             );
         }
 
-        if (sort === "price") {
-            filtered.sort((a, b) => a.price - b.price);
-        } else if (sort === "year") {
-            filtered.sort((a, b) => b.year - a.year);
+        switch (sort) {
+            case "price-asc":
+                filtered.sort((a, b) => a.price - b.price);
+                break;
+            case "price-desc":
+                filtered.sort((a, b) => b.price - a.price);
+                break;
+            case "year-asc":
+                filtered.sort((a, b) => a.year - b.year);
+                break;
+            case "year-desc":
+                filtered.sort((a, b) => b.year - a.year);
+                break;
+            case "createdAt-asc":
+                filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                break;
+            case "createdAt-desc":
+            case "default":
+                filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                break;
+            default:
+                break;
         }
 
         setFilteredCars(filtered);
-    };
-
-    const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleFeatureChange = (e) => {
-        const { value, checked } = e.target;
-        setFilters(prev => {
-            const updatedFeatures = checked
-                ? [...prev.features, value]
-                : prev.features.filter(f => f !== value);
-            return { ...prev, features: updatedFeatures };
-        });
-    };
-
-    const handleSort = (e) => {
-        setSort(e.target.value);
     };
 
     return (
         <div className={`container mt-5 ${styles.catalogContainer}`}>
             <h2 className={`text-center mb-4 ${styles.catalogTitle}`}>Explore Our Cars</h2>
 
-            <div className="row mb-3">
-                <div className="col-md-6">
-                    <input
-                        type="text"
-                        name="brand"
-                        placeholder="Search by brand..."
-                        className="form-control"
-                        value={filters.brand}
-                        onChange={handleFilterChange}
-                    />
-                </div>
-                <div className="col-md-3">
-                    <select className="form-select" value={sort} onChange={handleSort}>
-                        <option value="price">Sort by Price</option>
-                        <option value="year">Sort by Year</option>
-                    </select>
-                </div>
+            <div className="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-md-center mb-3">
+                <input
+                    type="text"
+                    name="brand"
+                    placeholder="Search by brand..."
+                    className="form-control w-50"
+                    value={filters.brand}
+                    onChange={(e) => setFilters(prev => ({ ...prev, brand: e.target.value }))}
+                />
+                <SortSelector sort={sort} setSort={setSort} />
+                <button className="btn btn-outline-secondary" onClick={() => setShowFilters(prev => !prev)}>
+                    {showFilters ? "Hide Filters" : "Show Filters"}
+                </button>
             </div>
 
-            <div className="row mb-4">
-                <div className="col-md-2">
-                    <input name="model" className="form-control" placeholder="Model" value={filters.model} onChange={handleFilterChange} />
-                </div>
-                <div className="col-md-2">
-                    <input name="year" className="form-control" placeholder="Year" value={filters.year} onChange={handleFilterChange} />
-                </div>
-                <div className="col-md-2">
-                    <input name="priceFrom" className="form-control" placeholder="Price From" value={filters.priceFrom} onChange={handleFilterChange} />
-                </div>
-                <div className="col-md-2">
-                    <input name="priceTo" className="form-control" placeholder="Price To" value={filters.priceTo} onChange={handleFilterChange} />
-                </div>
-                <div className="col-md-2">
-                    <select name="fuelType" className="form-select" value={filters.fuelType} onChange={handleFilterChange}>
-                        <option value="">Fuel Type</option>
-                        <option>Petrol</option>
-                        <option>Diesel</option>
-                        <option>Electric</option>
-                        <option>Hybrid</option>
-                        <option>CNG</option>
-                    </select>
-                </div>
-                <div className="col-md-2">
-                    <select name="transmission" className="form-select" value={filters.transmission} onChange={handleFilterChange}>
-                        <option value="">Transmission</option>
-                        <option>Manual</option>
-                        <option>Automatic</option>
-                    </select>
-                </div>
-            </div>
-
-            <div className="row mb-4">
-                <div className="col-md-2">
-                    <select name="condition" className="form-select" value={filters.condition} onChange={handleFilterChange}>
-                        <option value="">Condition</option>
-                        <option>New</option>
-                        <option>Used</option>
-                    </select>
-                </div>
-                <div className="col-md-2">
-                    <input name="color" className="form-control" placeholder="Color" value={filters.color} onChange={handleFilterChange} />
-                </div>
-            </div>
-
-            <div className="mb-4">
-                <strong>Features:</strong>
-                <div className="d-flex flex-wrap gap-3 mt-2">
-                    {["Air Conditioning", "Sunroof", "Bluetooth", "Navigation", "Backup Camera"].map((feature) => (
-                        <div key={feature} className="form-check">
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                value={feature}
-                                checked={filters.features.includes(feature)}
-                                onChange={handleFeatureChange}
-                                id={`feature-${feature}`}
-                            />
-                            <label className="form-check-label" htmlFor={`feature-${feature}`}>
-                                {feature}
-                            </label>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            {showFilters && (
+                <Filters
+                    filters={filters}
+                    setFilters={setFilters}
+                />
+            )}
 
             <div className="row">
                 {filteredCars.length > 0 ? (
