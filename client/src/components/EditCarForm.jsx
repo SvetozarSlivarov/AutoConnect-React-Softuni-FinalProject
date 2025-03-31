@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { Form, Button, Alert } from "react-bootstrap";
 import styles from "../public/styles/CarUploadForm.module.css";
 import featureCategories from "../constants/featureCategories";
+import validateCarForm from "../utils/validateCarEditForm";
 
 const EditCarForm = () => {
     const { id } = useParams();
@@ -28,9 +29,13 @@ const EditCarForm = () => {
     });
 
     const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [showFeatures, setShowFeatures] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
+
+    const firstErrorRef = useRef(null);
 
     useEffect(() => {
         const fetchCar = async () => {
@@ -91,6 +96,19 @@ const EditCarForm = () => {
         e.preventDefault();
         setError(null);
         setSuccess(false);
+        setSubmitting(true);
+
+        const errors = validateCarForm(carData);
+        setValidationErrors(errors);
+
+        if (Object.keys(errors).length > 0) {
+            setSubmitting(false);
+            const firstField = Object.keys(errors)[0];
+            if (firstErrorRef.current) {
+                firstErrorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+            return;
+        }
 
         try {
             const formData = new FormData();
@@ -112,6 +130,8 @@ const EditCarForm = () => {
             setTimeout(() => navigate(`/cars/${id}`), 1500);
         } catch (err) {
             setError(err.message);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -121,43 +141,77 @@ const EditCarForm = () => {
         <div className={styles.uploadContainer}>
             <h2 className="text-center mb-4">Edit Your Car</h2>
             <Form onSubmit={handleSubmit} encType="multipart/form-data">
-                {["brand", "model", "year", "price", "power", "mileage", "color", "description"].map((field) => (
-                    <Form.Group className="mb-3" key={field}>
-                        <Form.Label>{field.charAt(0).toUpperCase() + field.slice(1)}</Form.Label>
-                        <Form.Control
-                            as={field === "description" ? "textarea" : "input"}
-                            type="text"
-                            name={field}
-                            value={carData[field] || ""}
-                            onChange={handleChange}
-                            required={field !== "description"}
-                        />
-                    </Form.Group>
-                ))}
+                {["brand", "model", "year", "price", "power", "mileage", "color", "description"].map((field, index) => {
+                    const isNumberField = ["year", "price", "power", "mileage"].includes(field);
+                    return (
+                        <Form.Group className="mb-3" key={field} ref={index === 0 ? firstErrorRef : null}>
+                            <Form.Label>{field.charAt(0).toUpperCase() + field.slice(1)}</Form.Label>
+                            <Form.Control
+                                as={field === "description" ? "textarea" : "input"}
+                                type={isNumberField ? "number" : "text"}
+                                name={field}
+                                value={carData[field] || ""}
+                                onChange={handleChange}
+                                required={field !== "description"}
+                                isInvalid={!!validationErrors[field]}
+                                min={isNumberField ? 0 : undefined}
+                            />
+                            {validationErrors[field] && (
+                                <Form.Text className="text-danger">
+                                    {validationErrors[field]}
+                                </Form.Text>
+                            )}
+                        </Form.Group>
+                    );
+                })}
 
                 <Form.Group className="mb-3">
                     <Form.Label>Fuel Type</Form.Label>
-                    <Form.Select name="fuelType" value={carData.fuelType} onChange={handleChange}>
+                    <Form.Select
+                        name="fuelType"
+                        value={carData.fuelType}
+                        onChange={handleChange}
+                        isInvalid={!!validationErrors.fuelType}
+                    >
                         {["Petrol", "Diesel", "Electric", "Hybrid", "CNG"].map((opt) => (
                             <option key={opt}>{opt}</option>
                         ))}
                     </Form.Select>
+                    {validationErrors.fuelType && (
+                        <Form.Text className="text-danger">{validationErrors.fuelType}</Form.Text>
+                    )}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Transmission</Form.Label>
-                    <Form.Select name="transmission" value={carData.transmission} onChange={handleChange}>
+                    <Form.Select
+                        name="transmission"
+                        value={carData.transmission}
+                        onChange={handleChange}
+                        isInvalid={!!validationErrors.transmission}
+                    >
                         <option>Manual</option>
                         <option>Automatic</option>
                     </Form.Select>
+                    {validationErrors.transmission && (
+                        <Form.Text className="text-danger">{validationErrors.transmission}</Form.Text>
+                    )}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Condition</Form.Label>
-                    <Form.Select name="condition" value={carData.condition} onChange={handleChange}>
+                    <Form.Select
+                        name="condition"
+                        value={carData.condition}
+                        onChange={handleChange}
+                        isInvalid={!!validationErrors.condition}
+                    >
                         <option>New</option>
                         <option>Used</option>
                     </Form.Select>
+                    {validationErrors.condition && (
+                        <Form.Text className="text-danger">{validationErrors.condition}</Form.Text>
+                    )}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
@@ -203,7 +257,18 @@ const EditCarForm = () => {
 
                 <Form.Group className="mb-3">
                     <Form.Label>Upload New Images (max 5)</Form.Label>
-                    <Form.Control type="file" multiple onChange={handleFileChange} accept="image/*" />
+                    <Form.Control
+                        type="file"
+                        multiple
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        isInvalid={!!validationErrors.images}
+                    />
+                    {validationErrors.images && (
+                        <Form.Text className="text-danger">
+                            {validationErrors.images}
+                        </Form.Text>
+                    )}
                 </Form.Group>
 
                 {carData.existingImages.length > 0 && (
@@ -213,7 +278,12 @@ const EditCarForm = () => {
                             {carData.existingImages.map((img) => (
                                 <div key={img.public_id} className={styles.imageWrapper}>
                                     <img src={img.url} alt={img.public_id} className={styles.imagePreview} />
-                                    <Button variant="danger" size="sm" onClick={() => handleRemoveExistingImage(img.public_id)} className={styles.removeButton}>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => handleRemoveExistingImage(img.public_id)}
+                                        className={styles.removeButton}
+                                    >
                                         ✕
                                     </Button>
                                 </div>
@@ -238,8 +308,8 @@ const EditCarForm = () => {
                     </div>
                 )}
 
-                <Button type="submit" variant="primary" disabled={loading} className={styles.submitButton}>
-                    {loading ? "Saving..." : "Update Listing"}
+                <Button type="submit" variant="primary" disabled={submitting} className={styles.submitButton}>
+                    {submitting ? "Saving..." : "Update Listing"}
                 </Button>
             </Form>
 

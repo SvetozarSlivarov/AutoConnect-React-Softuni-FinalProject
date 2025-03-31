@@ -74,11 +74,11 @@ const CarDetailPage = () => {
 			const res = await fetch('http://localhost:5000/api/users/watchlist', {
 				method: "PUT",
 				headers: {
-				  "Content-Type": "application/json",
-				  Authorization: `Bearer ${token}`,
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify({ carId: car._id }),
-			  });
+			});
 
 			if (!res.ok) throw new Error("Failed to update watchlist");
 
@@ -91,7 +91,7 @@ const CarDetailPage = () => {
 
 	const isOwner = user && car?.owner === user._id;
 
-	if (loading) return <div className="text-center mt-5">Loading...</div>;
+	if (loading) return <div className="d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>Loading...</div>;
 	if (error) return <div className="text-center mt-5 text-danger">{error}</div>;
 	if (!car) return null;
 
@@ -115,10 +115,14 @@ const CarDetailPage = () => {
 							/>
 						))}
 					</div>
+					<div className={`${styles.descriptionWrapper} d-none d-lg-block`}>
+						<p className={styles.descriptionText}>{car.description}</p>
+					</div>
 				</div>
 
 				<div className="col-lg-6">
 					<h2>{car.brand} {car.model}</h2>
+					
 					<h3 className="text-primary">${car.price}</h3>
 					<p className="text-muted">
 						Condition: <strong>{car.condition}</strong>
@@ -132,27 +136,28 @@ const CarDetailPage = () => {
 						{car.drivetrain && <li className="list-group-item">Drivetrain: {car.drivetrain}</li>}
 						<li className="list-group-item">Power: {car.power} HP</li>
 					</ul>
-
-					{/* Buttons */}
-					{isOwner ? (
-						<div className="d-flex gap-2 car-detail-buttons mb-3">
-							<Link to={`/cars/edit/${car._id}`} className="btn btn-warning w-50">
-								Edit
-							</Link>
-							<button onClick={handleDelete} className="btn btn-danger w-50">
-								Delete
-							</button>
-						</div>
-					) : (
-						<div className="mb-3">
-							<button
-								onClick={handleToggleWatchlist}
-								className={`btn ${isInWatchlist ? "btn-outline-secondary" : "btn-outline-primary"} w-100`}
-							>
-								{isInWatchlist ? "✓ Remove from Watchlist" : "★ Add to Watchlist"}
-							</button>
-						</div>
+					{user && (
+						isOwner ? (
+							<div className="d-flex gap-2 car-detail-buttons mb-3">
+								<Link to={`/cars/edit/${car._id}`} className="btn btn-warning w-50">
+									Edit
+								</Link>
+								<button onClick={handleDelete} className="btn btn-danger w-50">
+									Delete
+								</button>
+							</div>
+						) : (
+							<div className="mb-3">
+								<button
+									onClick={handleToggleWatchlist}
+									className={`btn ${isInWatchlist ? "btn-outline-secondary" : "btn-outline-primary"} w-100`}
+								>
+									{isInWatchlist ? "✓ Remove from Watchlist" : "★ Add to Watchlist"}
+								</button>
+							</div>
+						)
 					)}
+
 
 					<div className={styles.sellerInfo}>
 						<h5>Seller Information</h5>
