@@ -4,12 +4,12 @@ import AuthContext from "../context/AuthContext";
 import { Form, Button, Alert } from "react-bootstrap";
 import styles from "../public/styles/CarUploadForm.module.css";
 import featureCategories from "../constants/featureCategories";
-import validateCarForm from "../utils/validateCarEditForm";
+import validateCarForm from "../utils/validateCarForm";
 
 const EditCarForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { token } = useContext(AuthContext);
+    const {user , token} = useContext(AuthContext);
 
     const [carData, setCarData] = useState({
         brand: "",
@@ -51,6 +51,11 @@ const EditCarForm = () => {
                     features: data.features || [],
                     existingImages: data.images || []
                 }));
+
+                if (data.ownerId !== user._id) {
+                    navigate("/404", { replace: true, state: "Access denied. Only the owner can edit this listing." });
+                    return;
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -58,7 +63,7 @@ const EditCarForm = () => {
             }
         };
         fetchCar();
-    }, [id, token]);
+    }, [id, token, user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -97,7 +102,16 @@ const EditCarForm = () => {
         setError(null);
         setSuccess(false);
         setSubmitting(true);
-
+        if ((carData.existingImages.length + carData.newImages.length) === 0) {
+            setError("At least one image is required.");
+            setSubmitting(false);
+            return;
+        }
+        if (carData.newImages.length + carData.existingImages.length > 5) {
+            setError("Maximum 5 images allowed (total).");
+            setSubmitting(false);
+            return;
+        }
         const errors = validateCarForm(carData);
         setValidationErrors(errors);
 

@@ -1,14 +1,16 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import { Form, Button, Alert } from "react-bootstrap";
 import styles from "../public/styles/CarUploadForm.module.css";
 import featureCategories from "../constants/featureCategories";
-
+import validateCarForm from "../utils/validateCarForm";
 
 const CarUploadForm = () => {
-    const { user, token } = useContext(AuthContext);
+    const { token } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [validationErrors, setValidationErrors] = useState({});
+    const firstErrorRef = useRef(null);
 
     const [carData, setCarData] = useState({
         brand: "",
@@ -30,7 +32,6 @@ const CarUploadForm = () => {
     const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showFeatures, setShowFeatures] = useState(false);
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -69,25 +70,38 @@ const CarUploadForm = () => {
         setLoading(true);
         setError(null);
 
+        if (carData.images.length === 0) {
+            setError("At least one image is required.");
+            setLoading(false);
+            return;
+        }
+        if (carData.images.length > 5) {
+            setError("Maximum 5 images allowed (total).");
+            setLoading(false);
+            return;
+        }
+
+        const errors = validateCarForm(carData);
+        setValidationErrors(errors);
+
+        if (Object.keys(errors).length > 0) {
+            setLoading(false);
+            if (firstErrorRef.current) {
+                firstErrorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+            return;
+        }
+
         try {
             const formData = new FormData();
-
-            formData.append("brand", carData.brand);
-            formData.append("model", carData.model);
-            formData.append("year", carData.year);
-            formData.append("price", carData.price);
-            formData.append("fuelType", carData.fuelType);
-            formData.append("transmission", carData.transmission);
-            formData.append("power", carData.power);
-            formData.append("mileage", carData.mileage);
-            formData.append("color", carData.color);
-            formData.append("description", carData.description);
-            formData.append("condition", carData.condition);
+            const fields = [
+                "brand", "model", "year", "price", "fuelType",
+                "transmission", "power", "mileage", "color",
+                "description", "condition"
+            ];
+            fields.forEach((field) => formData.append(field, carData[field]));
             formData.append("features", JSON.stringify(carData.features));
-
-            carData.images.forEach((img) => {
-                formData.append("images", img);
-            });
+            carData.images.forEach((img) => formData.append("images", img));
 
             const response = await fetch("http://localhost:5000/api/cars", {
                 method: "POST",
@@ -98,17 +112,15 @@ const CarUploadForm = () => {
             });
 
             const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Failed to upload car.");
-            }
+            if (!response.ok) throw new Error(data.message || "Failed to upload car.");
 
             setSuccess(true);
             setTimeout(() => {
                 setSuccess(false);
                 navigate("/catalog");
             }, 2000);
-        } catch (error) {
-            setError(error.message);
+        } catch (err) {
+            setError(err.message);
         } finally {
             setLoading(false);
         }
@@ -119,8 +131,12 @@ const CarUploadForm = () => {
             <h2 className="text-center mb-4">Sell Your Car</h2>
 
             <Form onSubmit={handleSubmit} encType="multipart/form-data">
-                {["brand", "model", "year", "price", "power", "mileage", "color", "description"].map((field) => (
-                    <Form.Group className="mb-3" key={field}>
+                {["brand", "model", "year", "price", "power", "mileage", "color", "description"].map((field, index) => (
+                    <Form.Group
+                        className="mb-3"
+                        key={field}
+                        ref={index === 0 ? firstErrorRef : null}
+                    >
                         <Form.Label>{field.charAt(0).toUpperCase() + field.slice(1)}</Form.Label>
                         <Form.Control
                             as={field === "description" ? "textarea" : "input"}
@@ -128,34 +144,62 @@ const CarUploadForm = () => {
                             name={field}
                             value={carData[field] || ""}
                             onChange={handleChange}
+                            isInvalid={!!validationErrors[field]}
                             required={field !== "description"}
                         />
+                        {validationErrors[field] && (
+                            <Form.Text className="text-danger">{validationErrors[field]}</Form.Text>
+                        )}
                     </Form.Group>
                 ))}
 
                 <Form.Group className="mb-3">
                     <Form.Label>Fuel Type</Form.Label>
-                    <Form.Select name="fuelType" value={carData.fuelType} onChange={handleChange}>
+                    <Form.Select
+                        name="fuelType"
+                        value={carData.fuelType}
+                        onChange={handleChange}
+                        isInvalid={!!validationErrors.fuelType}
+                    >
                         {["Petrol", "Diesel", "Electric", "Hybrid", "CNG"].map((opt) => (
                             <option key={opt}>{opt}</option>
                         ))}
                     </Form.Select>
+                    {validationErrors.fuelType && (
+                        <Form.Text className="text-danger">{validationErrors.fuelType}</Form.Text>
+                    )}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Transmission</Form.Label>
-                    <Form.Select name="transmission" value={carData.transmission} onChange={handleChange}>
+                    <Form.Select
+                        name="transmission"
+                        value={carData.transmission}
+                        onChange={handleChange}
+                        isInvalid={!!validationErrors.transmission}
+                    >
                         <option>Manual</option>
                         <option>Automatic</option>
                     </Form.Select>
+                    {validationErrors.transmission && (
+                        <Form.Text className="text-danger">{validationErrors.transmission}</Form.Text>
+                    )}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Condition</Form.Label>
-                    <Form.Select name="condition" value={carData.condition} onChange={handleChange}>
+                    <Form.Select
+                        name="condition"
+                        value={carData.condition}
+                        onChange={handleChange}
+                        isInvalid={!!validationErrors.condition}
+                    >
                         <option>New</option>
                         <option>Used</option>
                     </Form.Select>
+                    {validationErrors.condition && (
+                        <Form.Text className="text-danger">{validationErrors.condition}</Form.Text>
+                    )}
                 </Form.Group>
 
                 <Form.Group className="mb-3">
@@ -204,7 +248,16 @@ const CarUploadForm = () => {
 
                 <Form.Group className="mb-3">
                     <Form.Label>Upload Images (max 5)</Form.Label>
-                    <Form.Control type="file" multiple onChange={handleFileChange} accept="image/*" />
+                    <Form.Control
+                        type="file"
+                        multiple
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        isInvalid={!!validationErrors.images}
+                    />
+                    {validationErrors.images && (
+                        <Form.Text className="text-danger">{validationErrors.images}</Form.Text>
+                    )}
                 </Form.Group>
 
                 {carData.images.length > 0 && (
