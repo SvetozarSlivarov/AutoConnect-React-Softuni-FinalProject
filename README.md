@@ -170,12 +170,32 @@ Authorization: Bearer <token>
 
 ### ✅ Validations
 
-- All forms have client-side validation
-- Email is checked via API before submission
-- Field-specific error messages are shown
-- Redirects:
-  - Register → Login
-  - Login → `/` or previous location
+- **Client-side validation** for all forms:
+  - ✅ Required fields: first name, last name, email, password, car listing fields, etc.
+  - ✅ Email format validation (`isValidEmail`)
+  - ✅ Password strength validation (`isValidPassword`)
+    - At least 6 characters
+    - Must include at least one letter and one number
+  - ✅ Password confirmation matches
+  - ✅ Terms & conditions checkbox must be accepted
+- **Email uniqueness**:
+  - Checked via API before submission (`checkEmailExists`)
+  - Shows specific message if email is already in use
+- **Car listing form validation** (`validateCarForm`):
+  - ✅ All required fields: brand, model, year, price, etc.
+  - ✅ Select fields (fuel type, transmission, condition)
+  - ✅ Description validation (optional, but controlled)
+  - ✅ Image upload:
+    - At least 1 image required
+    - Max 5 images enforced with live preview & removal
+  - ✅ Validation error messages are shown per field
+  - ✅ Scrolls to first error automatically
+- **Field-specific error messages** shown immediately
+- **Loading indicators** during async actions (login, register, upload)
+- **Redirects**:
+  - 🔁 Register → Login (after successful registration)
+  - 🔁 Login → `/` or previously intended route (if provided)
+  - 🔁 Logged-in users visiting `/login` or `/register` are automatically redirected to `/`
 
 ### 🧱 UI Components
 
@@ -188,8 +208,6 @@ Authorization: Bearer <token>
 
 - Component-level loaders
 - Error and success messages displayed inline
-- No global toast system yet (🔧 can be added)
-
 ---
 
 ## 👤 Author
