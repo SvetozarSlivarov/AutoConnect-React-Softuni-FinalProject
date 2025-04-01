@@ -48,7 +48,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/cars/edit/:id" element={<EditCarForm />} />
+        <Route 
+          path="/cars/edit/:id" 
+          element={
+            <ProtectedRoute>
+              <EditCarForm />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/contact" element={<Contact />} />

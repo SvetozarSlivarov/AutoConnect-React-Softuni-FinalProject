@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import AuthContext from "../context/AuthContext.jsx";
 import { loginUser } from "../services/authService";
@@ -8,13 +8,21 @@ const Login = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const { login } = useContext(AuthContext);
+    const { user, login } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Получаване на съобщение и от къде е дошъл потребителят
     const redirectMessage = location.state?.message;
     const fromPath = location.state?.from || "/";
+
+    useEffect(() => {
+        if (user) {
+            navigate("/404", {
+                replace: true,
+                state: "You are already logged in.",
+            });
+        }
+    }, [user, navigate]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,7 +37,7 @@ const Login = () => {
         try {
             const data = await loginUser(formData.email, formData.password);
             login(data.token, data.user);
-            navigate(fromPath); // ⬅️ връща потребителя обратно към предишната страница
+            navigate(fromPath); // ⬅️ ще те върне към страницата, от която идваш
         } catch (error) {
             setError(error.message || "Login failed.");
             setFormData(prev => ({ ...prev, password: "" }));

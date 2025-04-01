@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { checkEmailExists, registerUser } from "../services/authService";
 import { isValidEmail, isValidPassword } from "../utils/registerValidation";
+import AuthContext from "../context/AuthContext";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -18,6 +19,16 @@ const Register = () => {
     const [emailTaken, setEmailTaken] = useState(false);
 
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (user) {
+            navigate("/404", {
+                replace: true,
+                state: "You are already logged in.",
+            });
+        }
+    }, [user, navigate]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -76,7 +87,9 @@ const Register = () => {
                 password: formData.password,
             });
 
-            navigate("/login");
+            navigate("/login", {
+                state: { message: "Registration successful. You can now log in." },
+            });
         } catch (err) {
             setError(err.message || "Registration failed.");
         } finally {

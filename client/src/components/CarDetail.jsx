@@ -122,7 +122,9 @@ const CarDetailPage = () => {
 
 				<div className="col-lg-6">
 					<h2>{car.brand} {car.model}</h2>
-					
+					<div className={`${styles.descriptionWrapper} d-block d-lg-none`}>
+						<p className={styles.descriptionText}>{car.description}</p>
+					</div>
 					<h3 className="text-primary">${car.price}</h3>
 					<p className="text-muted">
 						Condition: <strong>{car.condition}</strong>
